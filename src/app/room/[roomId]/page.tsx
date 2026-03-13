@@ -13,6 +13,7 @@ import { DiscussionPhase } from "@/components/game/DiscussionPhase";
 import { VotePhase } from "@/components/game/VotePhase";
 import { FinalDefense } from "@/components/game/FinalDefense";
 import { ResultPage } from "@/components/result/ResultPage";
+import { useAiActions } from "@/hooks/useAiActions";
 import type { PlayerSession } from "@/types/game";
 
 function LoadingScreen() {
@@ -58,6 +59,16 @@ export default function RoomPage() {
   const room = useRoom(roomId);
   const players = usePlayers(roomId);
   const { descriptions, messages, votes } = useGameStore();
+
+  const currentPlayer = (room ? players : []).find((p) => p.id === session?.playerId);
+  const isHost = currentPlayer?.is_host ?? false;
+
+  useAiActions({
+    room,
+    players,
+    sessionToken: session?.sessionToken ?? "",
+    isHost,
+  });
 
   if (!hydrated || !session) return <LoadingScreen />;
   if (!room) return <LoadingScreen />;

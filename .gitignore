@@ -1,3 +1,15 @@
 **/.cursor/
 **/.claude/
 **/.vscode/
+node_modules
+
+# 환경 변수
+.env.local
+.env*.local
+
+# Next.js 빌드 산출물
+.next/
+out/
+
+# 타입 생성 파일
+next-env.d.ts

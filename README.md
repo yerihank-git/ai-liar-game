@@ -1,5 +1,7 @@
 # LiarGame AI
 
+[![CI](https://github.com/yerihank-git/ai-liar-game/actions/workflows/ci.yml/badge.svg)](https://github.com/yerihank-git/ai-liar-game/actions/workflows/ci.yml)
+
 > **AI가 플레이어로 참여하는 실시간 멀티플레이어 라이어게임 웹앱**
 
 친구들과 링크 하나로 즉시 라이어게임을 시작할 수 있으며, AI가 플레이어로 참여하여 인원이 부족해도 게임을 즐길 수 있고, AI의 실시간 분석으로 게임의 재미와 전략적 깊이를 더합니다.
@@ -189,8 +191,8 @@ Supabase PostgreSQL 기반 6개 테이블:
 
 ```bash
 # 저장소 클론
-git clone <repository-url>
-cd liargame-ai
+git clone https://github.com/yerihank-git/ai-liar-game.git
+cd ai-liar-game
 
 # 의존성 설치
 npm install

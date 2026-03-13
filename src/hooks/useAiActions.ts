@@ -6,7 +6,6 @@ import type { Room, Player } from "@/types/game";
 interface UseAiActionsParams {
   room: Room | null;
   players: Player[];
-  sessionToken: string;
   /** 방장만 AI 액션을 트리거 (중복 호출 방지) */
   isHost: boolean;
 }
@@ -15,7 +14,7 @@ interface UseAiActionsParams {
  * 게임 진행 중 AI 플레이어의 행동을 자동으로 트리거하는 훅.
  * 방장 클라이언트에서만 AI API를 호출하여 중복 방지.
  */
-export function useAiActions({ room, players, sessionToken, isHost }: UseAiActionsParams) {
+export function useAiActions({ room, players, isHost }: UseAiActionsParams) {
   const triggeredRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {

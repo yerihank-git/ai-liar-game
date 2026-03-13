@@ -26,7 +26,7 @@ export function LobbyPage({ room, players, currentPlayerId, sessionToken }: Lobb
   const currentPlayer = players.find((p) => p.id === currentPlayerId);
   const isHost = currentPlayer?.is_host ?? false;
   const aiPlayers = players.filter((p) => p.is_ai);
-  const humanPlayers = players.filter((p) => !p.is_ai);
+
   const canStart = players.length >= GAME_CONFIG.MIN_PLAYERS;
 
   const { isOnline } = usePresence(room.id, currentPlayerId, currentPlayer?.nickname ?? "");

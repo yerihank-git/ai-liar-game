@@ -5,6 +5,20 @@ import { assignRoles, determineTurnOrder, pickRandomKeyword } from "@/lib/game-l
 import { CATEGORIES } from "@/constants/categories";
 import type { Player } from "@/types/game";
 
+async function fetchAiKeywords(category: string, baseUrl: string): Promise<{ keyword: string; foolKeyword: string } | null> {
+  try {
+    const res = await fetch(`${baseUrl}/api/ai/keywords`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ category }),
+    });
+    if (!res.ok) return null;
+    return res.json();
+  } catch {
+    return null;
+  }
+}
+
 const bodySchema = z.object({
   sessionToken: z.string().min(1),
 });
@@ -67,7 +81,26 @@ export async function POST(
   // 키워드 선택
   const category = room.category ?? CATEGORIES[0].name;
   const categoryData = CATEGORIES.find((c) => c.name === category) ?? CATEGORIES[0];
-  const keyword = pickRandomKeyword(categoryData.keywords);
+
+  let keyword: string;
+  let foolKeyword: string | null = null;
+
+  if (room.mode === "fool") {
+    // 바보 모드: AI 키워드 쌍 생성 시도
+    const baseUrl = req.headers.get("origin") ?? `https://${req.headers.get("host")}`;
+    const aiKeywords = await fetchAiKeywords(category, baseUrl);
+    if (aiKeywords) {
+      keyword = aiKeywords.keyword;
+      foolKeyword = aiKeywords.foolKeyword;
+    } else {
+      // 폴백: 카테고리에서 두 개 랜덤
+      keyword = pickRandomKeyword(categoryData.keywords);
+      const remaining = categoryData.keywords.filter((k) => k !== keyword);
+      foolKeyword = remaining.length > 0 ? pickRandomKeyword(remaining) : keyword;
+    }
+  } else {
+    keyword = pickRandomKeyword(categoryData.keywords);
+  }
 
   // 플레이어 역할 업데이트
   const roleUpdates = players.map((p) =>
@@ -84,7 +117,7 @@ export async function POST(
     .update({
       phase: "role_reveal",
       keyword,
-      fool_keyword: null,
+      fool_keyword: foolKeyword,
       turn_order: turnOrder,
       current_turn_player_id: turnOrder[0],
       phase_started_at: new Date().toISOString(),

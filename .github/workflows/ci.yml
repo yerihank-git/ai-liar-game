@@ -28,8 +28,16 @@ jobs:
       - name: Typecheck
         run: npx tsc --noEmit
 
-      - name: 테스트
-        run: npm test -- --run
+      - name: 테스트 (커버리지 포함)
+        run: npm test -- --run --coverage
+
+      - name: 커버리지 리포트 업로드
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 7
 
       - name: 빌드
         run: npm run build

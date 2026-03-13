@@ -13,6 +13,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { generateSessionToken } from "@/lib/utils";
+import { usePlayerStore } from "@/store/player-store";
 import type { CreateRoomResponse } from "@/types/game";
 
 interface CreateRoomDialogProps {
@@ -21,6 +22,7 @@ interface CreateRoomDialogProps {
 
 export function CreateRoomDialog({ children }: CreateRoomDialogProps) {
   const router = useRouter();
+  const setSession = usePlayerStore((s) => s.setSession);
   const [open, setOpen] = useState(false);
   const [nickname, setNickname] = useState("");
   const [loading, setLoading] = useState(false);
@@ -53,16 +55,13 @@ export function CreateRoomDialog({ children }: CreateRoomDialogProps) {
 
       const data: CreateRoomResponse = await res.json();
 
-      // 세션 토큰 localStorage 저장
-      localStorage.setItem(
-        "playerSession",
-        JSON.stringify({
-          playerId: data.playerId,
-          sessionToken,
-          nickname: trimmed,
-          roomId: data.roomId,
-        })
-      );
+      // 세션 Zustand 스토어에 저장 (persist가 localStorage에 자동 기록)
+      setSession({
+        playerId: data.playerId,
+        sessionToken,
+        nickname: trimmed,
+        roomId: data.roomId,
+      });
 
       setOpen(false);
       router.push(`/room/${data.roomId}`);

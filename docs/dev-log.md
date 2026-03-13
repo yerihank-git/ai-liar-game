@@ -13,7 +13,7 @@
 | [Sprint 2](./sprints/sprint-02.md) | 2026-03-14 | 대기실 UI, Zustand 스토어, Realtime 훅 | ✅ 완료 |
 | [Sprint 3](./sprints/sprint-03.md) | 2026-03-14 | 게임 상태 머신, 역할 배정, 설명/투표/결과, 결과 화면 | ✅ 완료 |
 | [Sprint 4](./sprints/sprint-04.md) | 2026-03-14 | Claude API 5개 엔드포인트, AI 플레이어 통합, 사후 분석 | ✅ 완료 |
-| [Sprint 5](./sprints/sprint-05.md) | 예정 | 토론 채팅 고도화, 타이머, 반응형, 에러 처리 | ⏸ 예정 |
+| [Sprint 5](./sprints/sprint-05.md) | 2026-03-14 | RoleReveal 전환 수정, 반응형 디자인, 에러 처리 | ✅ 완료 |
 | [Sprint 6](./sprints/sprint-06.md) | 예정 | 테스트, CI/CD, Vercel 배포, 최종 QA | ⏸ 예정 |
 
 ---

@@ -13,6 +13,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { generateSessionToken } from "@/lib/utils";
+import { usePlayerStore } from "@/store/player-store";
 import type { JoinRoomResponse } from "@/types/game";
 
 interface JoinRoomDialogProps {
@@ -22,6 +23,7 @@ interface JoinRoomDialogProps {
 
 export function JoinRoomDialog({ children, initialRoomCode = "" }: JoinRoomDialogProps) {
   const router = useRouter();
+  const setSession = usePlayerStore((s) => s.setSession);
   const [open, setOpen] = useState(false);
   const [roomCode, setRoomCode] = useState(initialRoomCode);
   const [nickname, setNickname] = useState("");
@@ -69,15 +71,12 @@ export function JoinRoomDialog({ children, initialRoomCode = "" }: JoinRoomDialo
 
       const data: JoinRoomResponse = await joinRes.json();
 
-      localStorage.setItem(
-        "playerSession",
-        JSON.stringify({
-          playerId: data.playerId,
-          sessionToken,
-          nickname: trimmedNick,
-          roomId,
-        })
-      );
+      setSession({
+        playerId: data.playerId,
+        sessionToken,
+        nickname: trimmedNick,
+        roomId,
+      });
 
       setOpen(false);
       router.push(`/room/${roomId}`);

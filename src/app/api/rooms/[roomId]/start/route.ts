@@ -102,11 +102,11 @@ export async function POST(
     keyword = pickRandomKeyword(categoryData.keywords);
   }
 
-  // 플레이어 역할 업데이트
+  // 플레이어 역할 업데이트 (AI 플레이어는 role_confirmed: true로 즉시 설정)
   const roleUpdates = players.map((p) =>
     supabase
       .from("players")
-      .update({ role: roleMap.get(p.id), role_confirmed: false })
+      .update({ role: roleMap.get(p.id), role_confirmed: p.is_ai ? true : false })
       .eq("id", p.id)
   );
   await Promise.all(roleUpdates);

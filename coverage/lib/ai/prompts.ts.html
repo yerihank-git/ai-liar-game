@@ -1,0 +1,658 @@
+
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Code coverage report for lib/ai/prompts.ts</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="../../favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+    
+<body>
+<div class='wrapper'>
+    <div class='pad1'>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">lib/ai</a> prompts.ts</h1>
+        <div class='clearfix'>
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Statements</span>
+                <span class='fraction'>0/76</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>1/1</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>1/1</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Lines</span>
+                <span class='fraction'>0/76</span>
+            </div>
+        
+            
+        </div>
+        <p class="quiet">
+            Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
+        </p>
+        <template id="filterTemplate">
+            <div class="quiet">
+                Filter:
+                <input type="search" id="fileSearch">
+            </div>
+        </template>
+    </div>
+    <div class='status-line low'></div>
+    <pre><table class="coverage">
+<tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
+<a name='L2'></a><a href='#L2'>2</a>
+<a name='L3'></a><a href='#L3'>3</a>
+<a name='L4'></a><a href='#L4'>4</a>
+<a name='L5'></a><a href='#L5'>5</a>
+<a name='L6'></a><a href='#L6'>6</a>
+<a name='L7'></a><a href='#L7'>7</a>
+<a name='L8'></a><a href='#L8'>8</a>
+<a name='L9'></a><a href='#L9'>9</a>
+<a name='L10'></a><a href='#L10'>10</a>
+<a name='L11'></a><a href='#L11'>11</a>
+<a name='L12'></a><a href='#L12'>12</a>
+<a name='L13'></a><a href='#L13'>13</a>
+<a name='L14'></a><a href='#L14'>14</a>
+<a name='L15'></a><a href='#L15'>15</a>
+<a name='L16'></a><a href='#L16'>16</a>
+<a name='L17'></a><a href='#L17'>17</a>
+<a name='L18'></a><a href='#L18'>18</a>
+<a name='L19'></a><a href='#L19'>19</a>
+<a name='L20'></a><a href='#L20'>20</a>
+<a name='L21'></a><a href='#L21'>21</a>
+<a name='L22'></a><a href='#L22'>22</a>
+<a name='L23'></a><a href='#L23'>23</a>
+<a name='L24'></a><a href='#L24'>24</a>
+<a name='L25'></a><a href='#L25'>25</a>
+<a name='L26'></a><a href='#L26'>26</a>
+<a name='L27'></a><a href='#L27'>27</a>
+<a name='L28'></a><a href='#L28'>28</a>
+<a name='L29'></a><a href='#L29'>29</a>
+<a name='L30'></a><a href='#L30'>30</a>
+<a name='L31'></a><a href='#L31'>31</a>
+<a name='L32'></a><a href='#L32'>32</a>
+<a name='L33'></a><a href='#L33'>33</a>
+<a name='L34'></a><a href='#L34'>34</a>
+<a name='L35'></a><a href='#L35'>35</a>
+<a name='L36'></a><a href='#L36'>36</a>
+<a name='L37'></a><a href='#L37'>37</a>
+<a name='L38'></a><a href='#L38'>38</a>
+<a name='L39'></a><a href='#L39'>39</a>
+<a name='L40'></a><a href='#L40'>40</a>
+<a name='L41'></a><a href='#L41'>41</a>
+<a name='L42'></a><a href='#L42'>42</a>
+<a name='L43'></a><a href='#L43'>43</a>
+<a name='L44'></a><a href='#L44'>44</a>
+<a name='L45'></a><a href='#L45'>45</a>
+<a name='L46'></a><a href='#L46'>46</a>
+<a name='L47'></a><a href='#L47'>47</a>
+<a name='L48'></a><a href='#L48'>48</a>
+<a name='L49'></a><a href='#L49'>49</a>
+<a name='L50'></a><a href='#L50'>50</a>
+<a name='L51'></a><a href='#L51'>51</a>
+<a name='L52'></a><a href='#L52'>52</a>
+<a name='L53'></a><a href='#L53'>53</a>
+<a name='L54'></a><a href='#L54'>54</a>
+<a name='L55'></a><a href='#L55'>55</a>
+<a name='L56'></a><a href='#L56'>56</a>
+<a name='L57'></a><a href='#L57'>57</a>
+<a name='L58'></a><a href='#L58'>58</a>
+<a name='L59'></a><a href='#L59'>59</a>
+<a name='L60'></a><a href='#L60'>60</a>
+<a name='L61'></a><a href='#L61'>61</a>
+<a name='L62'></a><a href='#L62'>62</a>
+<a name='L63'></a><a href='#L63'>63</a>
+<a name='L64'></a><a href='#L64'>64</a>
+<a name='L65'></a><a href='#L65'>65</a>
+<a name='L66'></a><a href='#L66'>66</a>
+<a name='L67'></a><a href='#L67'>67</a>
+<a name='L68'></a><a href='#L68'>68</a>
+<a name='L69'></a><a href='#L69'>69</a>
+<a name='L70'></a><a href='#L70'>70</a>
+<a name='L71'></a><a href='#L71'>71</a>
+<a name='L72'></a><a href='#L72'>72</a>
+<a name='L73'></a><a href='#L73'>73</a>
+<a name='L74'></a><a href='#L74'>74</a>
+<a name='L75'></a><a href='#L75'>75</a>
+<a name='L76'></a><a href='#L76'>76</a>
+<a name='L77'></a><a href='#L77'>77</a>
+<a name='L78'></a><a href='#L78'>78</a>
+<a name='L79'></a><a href='#L79'>79</a>
+<a name='L80'></a><a href='#L80'>80</a>
+<a name='L81'></a><a href='#L81'>81</a>
+<a name='L82'></a><a href='#L82'>82</a>
+<a name='L83'></a><a href='#L83'>83</a>
+<a name='L84'></a><a href='#L84'>84</a>
+<a name='L85'></a><a href='#L85'>85</a>
+<a name='L86'></a><a href='#L86'>86</a>
+<a name='L87'></a><a href='#L87'>87</a>
+<a name='L88'></a><a href='#L88'>88</a>
+<a name='L89'></a><a href='#L89'>89</a>
+<a name='L90'></a><a href='#L90'>90</a>
+<a name='L91'></a><a href='#L91'>91</a>
+<a name='L92'></a><a href='#L92'>92</a>
+<a name='L93'></a><a href='#L93'>93</a>
+<a name='L94'></a><a href='#L94'>94</a>
+<a name='L95'></a><a href='#L95'>95</a>
+<a name='L96'></a><a href='#L96'>96</a>
+<a name='L97'></a><a href='#L97'>97</a>
+<a name='L98'></a><a href='#L98'>98</a>
+<a name='L99'></a><a href='#L99'>99</a>
+<a name='L100'></a><a href='#L100'>100</a>
+<a name='L101'></a><a href='#L101'>101</a>
+<a name='L102'></a><a href='#L102'>102</a>
+<a name='L103'></a><a href='#L103'>103</a>
+<a name='L104'></a><a href='#L104'>104</a>
+<a name='L105'></a><a href='#L105'>105</a>
+<a name='L106'></a><a href='#L106'>106</a>
+<a name='L107'></a><a href='#L107'>107</a>
+<a name='L108'></a><a href='#L108'>108</a>
+<a name='L109'></a><a href='#L109'>109</a>
+<a name='L110'></a><a href='#L110'>110</a>
+<a name='L111'></a><a href='#L111'>111</a>
+<a name='L112'></a><a href='#L112'>112</a>
+<a name='L113'></a><a href='#L113'>113</a>
+<a name='L114'></a><a href='#L114'>114</a>
+<a name='L115'></a><a href='#L115'>115</a>
+<a name='L116'></a><a href='#L116'>116</a>
+<a name='L117'></a><a href='#L117'>117</a>
+<a name='L118'></a><a href='#L118'>118</a>
+<a name='L119'></a><a href='#L119'>119</a>
+<a name='L120'></a><a href='#L120'>120</a>
+<a name='L121'></a><a href='#L121'>121</a>
+<a name='L122'></a><a href='#L122'>122</a>
+<a name='L123'></a><a href='#L123'>123</a>
+<a name='L124'></a><a href='#L124'>124</a>
+<a name='L125'></a><a href='#L125'>125</a>
+<a name='L126'></a><a href='#L126'>126</a>
+<a name='L127'></a><a href='#L127'>127</a>
+<a name='L128'></a><a href='#L128'>128</a>
+<a name='L129'></a><a href='#L129'>129</a>
+<a name='L130'></a><a href='#L130'>130</a>
+<a name='L131'></a><a href='#L131'>131</a>
+<a name='L132'></a><a href='#L132'>132</a>
+<a name='L133'></a><a href='#L133'>133</a>
+<a name='L134'></a><a href='#L134'>134</a>
+<a name='L135'></a><a href='#L135'>135</a>
+<a name='L136'></a><a href='#L136'>136</a>
+<a name='L137'></a><a href='#L137'>137</a>
+<a name='L138'></a><a href='#L138'>138</a>
+<a name='L139'></a><a href='#L139'>139</a>
+<a name='L140'></a><a href='#L140'>140</a>
+<a name='L141'></a><a href='#L141'>141</a>
+<a name='L142'></a><a href='#L142'>142</a>
+<a name='L143'></a><a href='#L143'>143</a>
+<a name='L144'></a><a href='#L144'>144</a>
+<a name='L145'></a><a href='#L145'>145</a>
+<a name='L146'></a><a href='#L146'>146</a>
+<a name='L147'></a><a href='#L147'>147</a>
+<a name='L148'></a><a href='#L148'>148</a>
+<a name='L149'></a><a href='#L149'>149</a>
+<a name='L150'></a><a href='#L150'>150</a>
+<a name='L151'></a><a href='#L151'>151</a>
+<a name='L152'></a><a href='#L152'>152</a>
+<a name='L153'></a><a href='#L153'>153</a>
+<a name='L154'></a><a href='#L154'>154</a>
+<a name='L155'></a><a href='#L155'>155</a>
+<a name='L156'></a><a href='#L156'>156</a>
+<a name='L157'></a><a href='#L157'>157</a>
+<a name='L158'></a><a href='#L158'>158</a>
+<a name='L159'></a><a href='#L159'>159</a>
+<a name='L160'></a><a href='#L160'>160</a>
+<a name='L161'></a><a href='#L161'>161</a>
+<a name='L162'></a><a href='#L162'>162</a>
+<a name='L163'></a><a href='#L163'>163</a>
+<a name='L164'></a><a href='#L164'>164</a>
+<a name='L165'></a><a href='#L165'>165</a>
+<a name='L166'></a><a href='#L166'>166</a>
+<a name='L167'></a><a href='#L167'>167</a>
+<a name='L168'></a><a href='#L168'>168</a>
+<a name='L169'></a><a href='#L169'>169</a>
+<a name='L170'></a><a href='#L170'>170</a>
+<a name='L171'></a><a href='#L171'>171</a>
+<a name='L172'></a><a href='#L172'>172</a>
+<a name='L173'></a><a href='#L173'>173</a>
+<a name='L174'></a><a href='#L174'>174</a>
+<a name='L175'></a><a href='#L175'>175</a>
+<a name='L176'></a><a href='#L176'>176</a>
+<a name='L177'></a><a href='#L177'>177</a>
+<a name='L178'></a><a href='#L178'>178</a>
+<a name='L179'></a><a href='#L179'>179</a>
+<a name='L180'></a><a href='#L180'>180</a>
+<a name='L181'></a><a href='#L181'>181</a>
+<a name='L182'></a><a href='#L182'>182</a>
+<a name='L183'></a><a href='#L183'>183</a>
+<a name='L184'></a><a href='#L184'>184</a>
+<a name='L185'></a><a href='#L185'>185</a>
+<a name='L186'></a><a href='#L186'>186</a>
+<a name='L187'></a><a href='#L187'>187</a>
+<a name='L188'></a><a href='#L188'>188</a>
+<a name='L189'></a><a href='#L189'>189</a>
+<a name='L190'></a><a href='#L190'>190</a>
+<a name='L191'></a><a href='#L191'>191</a>
+<a name='L192'></a><a href='#L192'>192</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import type { PlayerRole } from "@/types/game";
+&nbsp;
+// ── 키워드 쌍 생성 (바보 모드) ───────────────────────────────
+&nbsp;
+<span class="cstat-no" title="statement not covered" >export const keywordsSystemPrompt = `당신은 라이어게임의 출제자입니다.</span>
+같은 카테고리에서 매우 유사하지만 미묘하게 다른 두 키워드를 생성해야 합니다.
+바보 모드에서 시민들은 정답 키워드를 알고, 바보 플레이어는 비슷하지만 다른 키워드를 받습니다.
+바보 플레이어는 자신의 키워드가 틀렸다는 것을 눈치채지 못해야 합니다.
+&nbsp;
+응답 형식 (JSON만, 다른 텍스트 없음):
+{"keyword": "시민 키워드", "foolKeyword": "바보 키워드"}`;
+&nbsp;
+<span class="cstat-no" title="statement not covered" >export function keywordsPrompt(category: string): string {</span>
+<span class="cstat-no" title="statement not covered" >  return `카테고리: ${category}</span>
+이 카테고리에서 유사하지만 구별 가능한 키워드 쌍을 만들어주세요.
+예시: {keyword: "피자", foolKeyword: "파스타"} 또는 {keyword: "사자", foolKeyword: "호랑이"}`;
+<span class="cstat-no" title="statement not covered" >}</span>
+&nbsp;
+// ── 설명 생성 ─────────────────────────────────────────────
+&nbsp;
+<span class="cstat-no" title="statement not covered" >export function describeSystemPrompt(role: PlayerRole): string {</span>
+<span class="cstat-no" title="statement not covered" >  const roleGuide: Record&lt;PlayerRole, string&gt; = {</span>
+<span class="cstat-no" title="statement not covered" >    citizen: `당신은 라이어게임의 시민입니다. 키워드를 알고 있습니다.</span>
+키워드를 직접 말하지 않으면서 설명해야 합니다.
+너무 명확하게 설명하면 라이어가 따라 하기 쉬우니 약간의 간접 표현을 섞으세요.
+자연스럽고 간결하게, 한 두 문장으로 답하세요.`,
+<span class="cstat-no" title="statement not covered" >    liar: `당신은 라이어게임의 라이어입니다. 키워드를 모릅니다.</span>
+다른 플레이어들의 설명을 참고해 추론하되, 확신 있는 척 설명하세요.
+너무 구체적인 표현은 피하고 모호하게 설명하세요.
+자연스럽고 간결하게, 한 두 문장으로 답하세요.`,
+<span class="cstat-no" title="statement not covered" >    fool: `당신은 라이어게임의 바보입니다. 당신이 받은 키워드로 설명하세요.</span>
+자신의 키워드가 맞다고 믿고 자연스럽게 설명하세요.
+자연스럽고 간결하게, 한 두 문장으로 답하세요.`,
+<span class="cstat-no" title="statement not covered" >  };</span>
+<span class="cstat-no" title="statement not covered" >  return roleGuide[role];</span>
+<span class="cstat-no" title="statement not covered" >}</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >export function describePrompt(params: {</span>
+  role: PlayerRole;
+  keyword: string | null;
+  category: string;
+  previousDescriptions: Array&lt;{ nickname: string; content: string }&gt;;
+<span class="cstat-no" title="statement not covered" >}): string {</span>
+<span class="cstat-no" title="statement not covered" >  const { role, keyword, category, previousDescriptions } = params;</span>
+<span class="cstat-no" title="statement not covered" >  const prev =</span>
+<span class="cstat-no" title="statement not covered" >    previousDescriptions.length &gt; 0</span>
+<span class="cstat-no" title="statement not covered" >      ? previousDescriptions.map((d) =&gt; `${d.nickname}: "${d.content}"`).join("\n")</span>
+<span class="cstat-no" title="statement not covered" >      : "없음";</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  return `카테고리: ${category}</span>
+<span class="cstat-no" title="statement not covered" >${role !== "liar" &amp;&amp; keyword ? `당신의 키워드: ${keyword}` : "키워드: 모름 (라이어)"}</span>
+&nbsp;
+이전 플레이어들의 설명:
+<span class="cstat-no" title="statement not covered" >${prev}</span>
+&nbsp;
+이제 당신의 설명을 한 두 문장으로 작성하세요. 키워드를 직접 언급하지 마세요.`;
+<span class="cstat-no" title="statement not covered" >}</span>
+&nbsp;
+// ── 토론 메시지 생성 ──────────────────────────────────────
+&nbsp;
+<span class="cstat-no" title="statement not covered" >export function discussSystemPrompt(role: PlayerRole): string {</span>
+<span class="cstat-no" title="statement not covered" >  const roleGuide: Record&lt;PlayerRole, string&gt; = {</span>
+<span class="cstat-no" title="statement not covered" >    citizen: `당신은 라이어게임의 시민입니다. 토론에서 라이어를 찾아야 합니다.</span>
+다른 플레이어의 설명에서 의심스러운 점을 지적하거나, 자신의 의견을 자연스럽게 표현하세요.
+짧고 자연스러운 한국어 채팅 메시지 1~2문장으로 답하세요.`,
+<span class="cstat-no" title="statement not covered" >    liar: `당신은 라이어게임의 라이어입니다. 의심을 피해야 합니다.</span>
+자신에게 쏠리는 의심을 다른 사람에게 돌리거나, 무고함을 자연스럽게 주장하세요.
+짧고 자연스러운 한국어 채팅 메시지 1~2문장으로 답하세요.`,
+<span class="cstat-no" title="statement not covered" >    fool: `당신은 라이어게임의 바보입니다. 자신이 시민이라고 믿습니다.</span>
+자신있게 시민으로서 발언하세요.
+짧고 자연스러운 한국어 채팅 메시지 1~2문장으로 답하세요.`,
+<span class="cstat-no" title="statement not covered" >  };</span>
+<span class="cstat-no" title="statement not covered" >  return roleGuide[role];</span>
+<span class="cstat-no" title="statement not covered" >}</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >export function discussPrompt(params: {</span>
+  role: PlayerRole;
+  keyword: string | null;
+  category: string;
+  descriptions: Array&lt;{ nickname: string; content: string }&gt;;
+  recentMessages: Array&lt;{ nickname: string; content: string }&gt;;
+  myNickname: string;
+<span class="cstat-no" title="statement not covered" >}): string {</span>
+<span class="cstat-no" title="statement not covered" >  const { category, descriptions, recentMessages, myNickname } = params;</span>
+<span class="cstat-no" title="statement not covered" >  const descText = descriptions.map((d) =&gt; `${d.nickname}: "${d.content}"`).join("\n");</span>
+<span class="cstat-no" title="statement not covered" >  const msgText =</span>
+<span class="cstat-no" title="statement not covered" >    recentMessages.length &gt; 0</span>
+<span class="cstat-no" title="statement not covered" >      ? recentMessages.slice(-5).map((m) =&gt; `${m.nickname}: ${m.content}`).join("\n")</span>
+<span class="cstat-no" title="statement not covered" >      : "없음";</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  return `카테고리: ${category}</span>
+<span class="cstat-no" title="statement not covered" >내 닉네임: ${myNickname}</span>
+&nbsp;
+전체 설명:
+<span class="cstat-no" title="statement not covered" >${descText}</span>
+&nbsp;
+최근 대화:
+<span class="cstat-no" title="statement not covered" >${msgText}</span>
+&nbsp;
+토론 발언을 1~2문장으로 작성하세요.`;
+<span class="cstat-no" title="statement not covered" >}</span>
+&nbsp;
+// ── 투표 결정 ─────────────────────────────────────────────
+&nbsp;
+<span class="cstat-no" title="statement not covered" >export function voteSystemPrompt(role: PlayerRole): string {</span>
+<span class="cstat-no" title="statement not covered" >  const roleGuide: Record&lt;PlayerRole, string&gt; = {</span>
+<span class="cstat-no" title="statement not covered" >    citizen: `당신은 라이어게임의 시민입니다. 가장 의심스러운 플레이어를 지목해야 합니다.</span>
+설명이 너무 모호하거나 다른 사람의 설명을 베낀 것 같은 플레이어를 찾으세요.
+투표할 플레이어의 닉네임만 정확히 답하세요.`,
+<span class="cstat-no" title="statement not covered" >    liar: `당신은 라이어게임의 라이어입니다. 의심을 피해야 합니다.</span>
+자신에게 가장 의심을 많이 보내는 플레이어에게 투표하거나,
+또는 가장 의심스럽게 행동하는 척하기 쉬운 플레이어를 지목하세요.
+투표할 플레이어의 닉네임만 정확히 답하세요.`,
+<span class="cstat-no" title="statement not covered" >    fool: `당신은 라이어게임의 바보입니다.</span>
+가장 의심스러운 설명을 한 플레이어를 지목하세요.
+투표할 플레이어의 닉네임만 정확히 답하세요.`,
+<span class="cstat-no" title="statement not covered" >  };</span>
+<span class="cstat-no" title="statement not covered" >  return roleGuide[role];</span>
+<span class="cstat-no" title="statement not covered" >}</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >export function votePrompt(params: {</span>
+  role: PlayerRole;
+  keyword: string | null;
+  category: string;
+  descriptions: Array&lt;{ nickname: string; content: string }&gt;;
+  otherPlayers: string[];
+  myNickname: string;
+<span class="cstat-no" title="statement not covered" >}): string {</span>
+<span class="cstat-no" title="statement not covered" >  const { category, descriptions, otherPlayers, myNickname } = params;</span>
+<span class="cstat-no" title="statement not covered" >  const descText = descriptions.map((d) =&gt; `${d.nickname}: "${d.content}"`).join("\n");</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  return `카테고리: ${category}</span>
+<span class="cstat-no" title="statement not covered" >내 닉네임: ${myNickname}</span>
+<span class="cstat-no" title="statement not covered" >투표 가능한 플레이어: ${otherPlayers.join(", ")}</span>
+&nbsp;
+전체 설명:
+<span class="cstat-no" title="statement not covered" >${descText}</span>
+&nbsp;
+위 플레이어 중 한 명의 닉네임만 정확히 답하세요.`;
+<span class="cstat-no" title="statement not covered" >}</span>
+&nbsp;
+// ── 사후 분석 ─────────────────────────────────────────────
+&nbsp;
+<span class="cstat-no" title="statement not covered" >export const analyzeSystemPrompt = `당신은 라이어게임의 해설자입니다.</span>
+게임이 끝난 후 각 플레이어의 전략과 의심스러운 순간을 분석해주세요.
+JSON 형식으로 분석 결과를 반환하세요.
+&nbsp;
+응답 형식:
+{
+  "summary": "게임 전체 요약 (2~3문장)",
+  "suspicion_points": [
+    {"nickname": "닉네임", "description": "이 플레이어가 의심스러웠던 이유", "suspicion_level": "low|medium|high"}
+  ],
+  "key_clues": ["핵심 단서 1", "핵심 단서 2", "핵심 단서 3"],
+  "strategy_evaluation": [
+    {"nickname": "닉네임", "role": "역할", "evaluation": "전략 평가"}
+  ],
+  "improvement_tips": ["개선 팁 1", "개선 팁 2"]
+}`;
+&nbsp;
+<span class="cstat-no" title="statement not covered" >export function analyzePrompt(params: {</span>
+  mode: string;
+  category: string;
+  keyword: string;
+  foolKeyword: string | null;
+  players: Array&lt;{ nickname: string; role: string; is_ai: boolean }&gt;;
+  descriptions: Array&lt;{ nickname: string; content: string }&gt;;
+  votes: Array&lt;{ voterNickname: string; targetNickname: string }&gt;;
+  result: { winner: string; correct_guess?: boolean; guessed_keyword?: string };
+<span class="cstat-no" title="statement not covered" >}): string {</span>
+<span class="cstat-no" title="statement not covered" >  const { mode, category, keyword, foolKeyword, players, descriptions, votes, result } = params;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  const playerText = players.map((p) =&gt; `${p.nickname} (${p.role}${p.is_ai ? ", AI" : ""})`).join(", ");</span>
+<span class="cstat-no" title="statement not covered" >  const descText = descriptions.map((d) =&gt; `${d.nickname}: "${d.content}"`).join("\n");</span>
+<span class="cstat-no" title="statement not covered" >  const voteText = votes.map((v) =&gt; `${v.voterNickname} → ${v.targetNickname}`).join(", ");</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >  return `게임 모드: ${mode === "classic" ? "기본 라이어" : "바보"}</span>
+<span class="cstat-no" title="statement not covered" >카테고리: ${category}</span>
+<span class="cstat-no" title="statement not covered" >키워드: ${keyword}${foolKeyword ? ` / 바보 키워드: ${foolKeyword}` : ""}</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >플레이어: ${playerText}</span>
+&nbsp;
+설명:
+<span class="cstat-no" title="statement not covered" >${descText}</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >투표: ${voteText}</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >결과: ${result.winner} 승리${result.correct_guess != null ? ` (정답 맞히기: ${result.correct_guess ? "성공" : "실패"})` : ""}${result.guessed_keyword ? ` - 제출: "${result.guessed_keyword}"` : ""}</span>
+&nbsp;
+위 게임을 분석해주세요.`;
+<span class="cstat-no" title="statement not covered" >}</span>
+&nbsp;</pre></td></tr></table></pre>
+
+                <div class='push'></div><!-- for sticky footer -->
+            </div><!-- /wrapper -->
+            <div class='footer quiet pad2 space-top1 center small'>
+                Code coverage generated by
+                <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
+                at 2026-03-13T08:38:12.657Z
+            </div>
+        <script src="../../prettify.js"></script>
+        <script>
+            window.onload = function () {
+                prettyPrint();
+            };
+        </script>
+        <script src="../../sorter.js"></script>
+        <script src="../../block-navigation.js"></script>
+    </body>
+</html>
+    

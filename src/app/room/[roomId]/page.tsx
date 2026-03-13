@@ -2,10 +2,19 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
-import type { GamePhase, Room, Player, PlayerSession } from "@/types/game";
+import { usePlayerStore } from "@/store/player-store";
+import { useGameStore } from "@/store/game-store";
+import { useRoom } from "@/hooks/useRoom";
+import { usePlayers } from "@/hooks/usePlayers";
+import { LobbyPage } from "@/components/lobby/LobbyPage";
+import { RoleReveal } from "@/components/game/RoleReveal";
+import { DescriptionPhase } from "@/components/game/DescriptionPhase";
+import { DiscussionPhase } from "@/components/game/DiscussionPhase";
+import { VotePhase } from "@/components/game/VotePhase";
+import { FinalDefense } from "@/components/game/FinalDefense";
+import { ResultPage } from "@/components/result/ResultPage";
+import type { PlayerSession } from "@/types/game";
 
-// 각 phase별 컴포넌트 (Sprint 2~3에서 구현)
 function LoadingScreen() {
   return (
     <div className="flex items-center justify-center min-h-[60vh]">
@@ -14,36 +23,24 @@ function LoadingScreen() {
   );
 }
 
-function PhasePlaceholder({ phase }: { phase: GamePhase }) {
-  const labels: Record<GamePhase, string> = {
-    waiting: "대기실",
-    role_reveal: "역할 확인",
-    description: "설명 단계",
-    discussion: "토론",
-    vote: "투표",
-    final_defense: "최후의 변론",
-    result: "결과",
-  };
-  return (
-    <div className="flex items-center justify-center min-h-[60vh]">
-      <p className="text-lg text-muted-foreground">
-        [{labels[phase] ?? phase}] — 개발 중
-      </p>
-    </div>
-  );
-}
-
 export default function RoomPage() {
   const { roomId } = useParams<{ roomId: string }>();
   const router = useRouter();
 
-  const [room, setRoom] = useState<Room | null>(null);
-  const [players, setPlayers] = useState<Player[]>([]);
-  const [session, setSession] = useState<PlayerSession | null>(null);
-  const [notFound, setNotFound] = useState(false);
+  // Zustand persist가 hydration 전에 null일 수 있으므로 fallback 처리
+  const storeSession = usePlayerStore((s) => s.session);
+  const setSession = usePlayerStore((s) => s.setSession);
+  const [session, setLocalSession] = useState<PlayerSession | null>(null);
+  const [hydrated, setHydrated] = useState(false);
 
-  // localStorage에서 세션 복원
+  // Zustand persist 방식과 localStorage 방식 병행 지원
   useEffect(() => {
+    setHydrated(true);
+    if (storeSession && storeSession.roomId === roomId) {
+      setLocalSession(storeSession);
+      return;
+    }
+    // fallback: 이전 방식 localStorage 직접 읽기
     const raw = localStorage.getItem("playerSession");
     if (!raw) {
       router.replace("/");
@@ -54,83 +51,69 @@ export default function RoomPage() {
       router.replace("/");
       return;
     }
+    setLocalSession(parsed);
     setSession(parsed);
-  }, [roomId, router]);
+  }, [roomId, storeSession, router, setSession]);
 
-  // 방 데이터 초기 로드 + Realtime 구독
-  useEffect(() => {
-    if (!session) return;
-    const supabase = createClient();
+  const room = useRoom(roomId);
+  const players = usePlayers(roomId);
+  const { descriptions, messages, votes } = useGameStore();
 
-    const load = async () => {
-      const { data: roomData } = await supabase
-        .from("rooms")
-        .select("*")
-        .eq("id", roomId)
-        .single();
+  if (!hydrated || !session) return <LoadingScreen />;
+  if (!room) return <LoadingScreen />;
 
-      if (!roomData) {
-        setNotFound(true);
-        return;
-      }
-      setRoom(roomData as Room);
+  const commonProps = {
+    room,
+    players,
+    currentPlayerId: session.playerId,
+    sessionToken: session.sessionToken,
+  };
 
-      const { data: playerData } = await supabase
-        .from("players")
-        .select("*")
-        .eq("room_id", roomId)
-        .order("created_at");
+  // phase별 컴포넌트 분기
+  switch (room.phase) {
+    case "waiting":
+      return <LobbyPage {...commonProps} />;
 
-      setPlayers((playerData as Player[]) ?? []);
-    };
+    case "role_reveal":
+      return (
+        <div className="max-w-4xl mx-auto px-4 py-6">
+          <RoleReveal {...commonProps} />
+        </div>
+      );
 
-    load();
+    case "description":
+      return (
+        <div className="max-w-4xl mx-auto px-4 py-6">
+          <DescriptionPhase {...commonProps} descriptions={descriptions} />
+        </div>
+      );
 
-    // rooms 실시간 구독
-    const roomSub = supabase
-      .channel(`room:${roomId}`)
-      .on(
-        "postgres_changes",
-        { event: "UPDATE", schema: "public", table: "rooms", filter: `id=eq.${roomId}` },
-        (payload) => setRoom(payload.new as Room)
-      )
-      .subscribe();
+    case "discussion":
+      return (
+        <div className="max-w-4xl mx-auto px-4 py-6">
+          <DiscussionPhase {...commonProps} descriptions={descriptions} messages={messages} />
+        </div>
+      );
 
-    // players 실시간 구독
-    const playerSub = supabase
-      .channel(`players:${roomId}`)
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "players", filter: `room_id=eq.${roomId}` },
-        async () => {
-          const { data } = await supabase
-            .from("players")
-            .select("*")
-            .eq("room_id", roomId)
-            .order("created_at");
-          setPlayers((data as Player[]) ?? []);
-        }
-      )
-      .subscribe();
+    case "vote":
+      return (
+        <div className="max-w-4xl mx-auto px-4 py-6">
+          <VotePhase {...commonProps} votes={votes} />
+        </div>
+      );
 
-    return () => {
-      supabase.removeChannel(roomSub);
-      supabase.removeChannel(playerSub);
-    };
-  }, [roomId, session]);
+    case "final_defense":
+      return (
+        <div className="max-w-4xl mx-auto px-4 py-6">
+          <FinalDefense {...commonProps} />
+        </div>
+      );
 
-  if (notFound) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-        <p className="text-muted-foreground">존재하지 않는 방입니다.</p>
-        <button onClick={() => router.replace("/")} className="text-primary underline text-sm">
-          홈으로 돌아가기
-        </button>
-      </div>
-    );
+    case "result":
+      return (
+        <div className="max-w-4xl mx-auto px-4 py-6">
+          <ResultPage {...commonProps} votes={votes} />
+        </div>
+      );
   }
-
-  if (!room || !session) return <LoadingScreen />;
-
-  return <PhasePlaceholder phase={room.phase} />;
 }

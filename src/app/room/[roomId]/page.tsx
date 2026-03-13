@@ -66,7 +66,6 @@ export default function RoomPage() {
   useAiActions({
     room,
     players,
-    sessionToken: session?.sessionToken ?? "",
     isHost,
   });
 

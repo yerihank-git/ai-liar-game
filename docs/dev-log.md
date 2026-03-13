@@ -14,7 +14,7 @@
 | [Sprint 3](./sprints/sprint-03.md) | 2026-03-14 | 게임 상태 머신, 역할 배정, 설명/투표/결과, 결과 화면 | ✅ 완료 |
 | [Sprint 4](./sprints/sprint-04.md) | 2026-03-14 | Claude API 5개 엔드포인트, AI 플레이어 통합, 사후 분석 | ✅ 완료 |
 | [Sprint 5](./sprints/sprint-05.md) | 2026-03-14 | RoleReveal 전환 수정, 반응형 디자인, 에러 처리 | ✅ 완료 |
-| [Sprint 6](./sprints/sprint-06.md) | 예정 | 테스트, CI/CD, Vercel 배포, 최종 QA | ⏸ 예정 |
+| [Sprint 6](./sprints/sprint-06.md) | 2026-03-14 | 게임 로직 단위 테스트 (Vitest 28개), GitHub Actions CI 파이프라인 | ✅ 완료 |
 
 ---
 
@@ -36,3 +36,5 @@
 | AI 분석 캐시 | game_analyses 중복 저장 방지 (DB 기존 기록 확인 후 반환) | Sprint 4 |
 | shadcn Dialog | `@base-ui/react` 방식 — asChild 미지원, controlled state 사용 | Sprint 1 |
 | Turbopack TLS | `experimental.turbopackUseSystemTlsCerts: true` (Windows 환경) | Sprint 1 |
+| 테스트 범위 | 순수 함수만 단위 테스트 — API/컴포넌트는 Supabase 모킹 비용 대비 효과 낮아 제외 | Sprint 6 |
+| CI 환경변수 | lint/typecheck/test는 env 불필요, build 단계에서만 secrets 주입 | Sprint 6 |

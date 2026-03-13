@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ResultBanner } from "./ResultBanner";
 import { RoleRevealTable } from "./RoleRevealTable";
 import { VoteVisualization } from "./VoteVisualization";
+import { AIAnalysis } from "./AIAnalysis";
 import type { Room, Player, Vote } from "@/types/game";
 
 interface ResultPageProps {
@@ -47,6 +48,7 @@ export function ResultPage({ room, players, votes, currentPlayerId, sessionToken
       <ResultBanner room={room} players={players} currentPlayerId={currentPlayerId} />
       <RoleRevealTable room={room} players={players} currentPlayerId={currentPlayerId} />
       <VoteVisualization players={players} votes={votes} />
+      <AIAnalysis roomId={room.id} />
 
       <div className="flex gap-3 pt-2">
         {isHost && (

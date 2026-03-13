@@ -87,42 +87,42 @@ export default function RoomPage() {
 
     case "role_reveal":
       return (
-        <div className="max-w-4xl mx-auto px-4 py-6">
+        <div className="max-w-2xl mx-auto px-4 py-4 sm:py-6">
           <RoleReveal {...commonProps} />
         </div>
       );
 
     case "description":
       return (
-        <div className="max-w-4xl mx-auto px-4 py-6">
+        <div className="max-w-2xl mx-auto px-4 py-4 sm:py-6">
           <DescriptionPhase {...commonProps} descriptions={descriptions} />
         </div>
       );
 
     case "discussion":
       return (
-        <div className="max-w-4xl mx-auto px-4 py-6">
-          <DiscussionPhase {...commonProps} descriptions={descriptions} messages={messages} />
+        <div className="max-w-2xl mx-auto px-4 py-4 sm:py-6">
+          <DiscussionPhase {...commonProps} descriptions={descriptions} messages={messages} isHost={isHost} />
         </div>
       );
 
     case "vote":
       return (
-        <div className="max-w-4xl mx-auto px-4 py-6">
+        <div className="max-w-xl mx-auto px-4 py-4 sm:py-6">
           <VotePhase {...commonProps} votes={votes} />
         </div>
       );
 
     case "final_defense":
       return (
-        <div className="max-w-4xl mx-auto px-4 py-6">
+        <div className="max-w-xl mx-auto px-4 py-4 sm:py-6">
           <FinalDefense {...commonProps} />
         </div>
       );
 
     case "result":
       return (
-        <div className="max-w-4xl mx-auto px-4 py-6">
+        <div className="max-w-2xl mx-auto px-4 py-4 sm:py-6">
           <ResultPage {...commonProps} votes={votes} />
         </div>
       );

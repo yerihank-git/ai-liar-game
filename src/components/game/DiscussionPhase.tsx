@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { useTimer } from "@/hooks/useTimer";
 import type { Room, Player, Description, Message } from "@/types/game";
@@ -12,6 +12,7 @@ interface DiscussionPhaseProps {
   messages: Message[];
   currentPlayerId: string;
   sessionToken: string;
+  isHost: boolean;
 }
 
 export function DiscussionPhase({
@@ -21,15 +22,26 @@ export function DiscussionPhase({
   messages,
   currentPlayerId,
   sessionToken,
+  isHost,
 }: DiscussionPhaseProps) {
   const [input, setInput] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [showDescriptions, setShowDescriptions] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  const handleExpire = useCallback(async () => {
+    if (!isHost) return;
+    await fetch(`/api/rooms/${room.id}/next-phase`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ sessionToken }),
+    });
+  }, [isHost, room.id, sessionToken]);
+
   const { remainingSec } = useTimer({
     startedAt: room.phase_started_at,
     durationSec: room.discussion_timer_sec,
+    onExpire: handleExpire,
   });
 
   useEffect(() => {
@@ -61,7 +73,7 @@ export function DiscussionPhase({
   const timerColor = remainingSec <= 30 ? "var(--liar-red)" : remainingSec <= 60 ? "var(--citizen-gold)" : "var(--ai-teal)";
 
   return (
-    <div className="max-w-2xl mx-auto flex flex-col gap-4" style={{ height: "calc(100vh - 200px)", minHeight: "500px" }}>
+    <div className="flex flex-col gap-4" style={{ height: "calc(100dvh - 160px)", minHeight: "400px" }}>
       {/* 헤더 */}
       <div className="flex items-center justify-between shrink-0">
         <div>

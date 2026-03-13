@@ -97,7 +97,7 @@ export function LobbyPage({ room, players, currentPlayerId, sessionToken }: Lobb
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6 max-w-4xl mx-auto">
+    <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-4 lg:gap-6 max-w-4xl mx-auto px-4 py-4 lg:px-6 lg:py-6">
       {/* 왼쪽: 플레이어 목록 */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">

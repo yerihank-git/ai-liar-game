@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useTimer } from "@/hooks/useTimer";
 import type { Room, Player } from "@/types/game";
 
 interface RoleRevealProps {
@@ -52,27 +51,20 @@ export function RoleReveal({ room, players, currentPlayerId, sessionToken }: Rol
     if (confirmed || isSubmitting) return;
     setIsSubmitting(true);
     try {
-      await fetch(`/api/rooms/${room.id}/next-phase`, {
+      await fetch(`/api/rooms/${room.id}/confirm-role`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ sessionToken }),
       });
       setConfirmed(true);
+      // phase 전환은 Realtime으로 자동 반영
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // 전원 확인 완료 시 자동 phase 전환은 서버에서 처리
-  // (role_revealed 플래그 대신 next-phase API를 방장이 명시 호출하는 방식)
-
-  useTimer({
-    startedAt: room.phase_started_at,
-    durationSec: 60,
-  });
-
   return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] gap-8">
+    <div className="flex flex-col items-center justify-center min-h-[60vh] gap-8 px-4">
       <div className="text-center space-y-2">
         <p
           className="text-xs tracking-[0.3em] uppercase opacity-50"
@@ -90,7 +82,7 @@ export function RoleReveal({ room, players, currentPlayerId, sessionToken }: Rol
 
       {/* 역할 카드 */}
       <div
-        className="relative w-64 h-80 cursor-pointer"
+        className="relative w-56 h-72 sm:w-64 sm:h-80 cursor-pointer"
         style={{ perspective: "1000px" }}
         onClick={() => !flipped && setFlipped(true)}
       >
@@ -186,7 +178,7 @@ export function RoleReveal({ room, players, currentPlayerId, sessionToken }: Rol
             {confirmed ? "확인 완료 ✓" : isSubmitting ? "처리 중..." : "확인 완료"}
           </Button>
           <p className="text-xs opacity-40" style={{ fontFamily: "var(--font-game-mono, monospace)" }}>
-            확인 완료: {confirmedCount} / {totalCount}명
+            확인 완료: {confirmedCount}/{totalCount}명 · 전원 확인 시 자동 시작
           </p>
         </div>
       )}

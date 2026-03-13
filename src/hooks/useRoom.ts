@@ -32,13 +32,37 @@ export function useRoom(roomId: string) {
 
     load();
 
-    // rooms 실시간 구독
+    // rooms / descriptions / messages / votes 실시간 구독
     const channel = supabase
       .channel(`room-${roomId}`)
       .on(
         "postgres_changes",
         { event: "UPDATE", schema: "public", table: "rooms", filter: `id=eq.${roomId}` },
         (payload) => setRoom(payload.new as Room)
+      )
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "descriptions", filter: `room_id=eq.${roomId}` },
+        async () => {
+          const { data } = await supabase.from("descriptions").select("*").eq("room_id", roomId).order("turn_number");
+          if (data) setDescriptions(data);
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "messages", filter: `room_id=eq.${roomId}` },
+        async () => {
+          const { data } = await supabase.from("messages").select("*").eq("room_id", roomId).order("created_at");
+          if (data) setMessages(data);
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "votes", filter: `room_id=eq.${roomId}` },
+        async () => {
+          const { data } = await supabase.from("votes").select("*").eq("room_id", roomId);
+          if (data) setVotes(data);
+        }
       )
       .subscribe();
 

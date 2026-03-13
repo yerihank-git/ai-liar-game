@@ -3,9 +3,16 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { usePlayerStore } from "@/store/player-store";
+import { useGameStore } from "@/store/game-store";
 import { useRoom } from "@/hooks/useRoom";
 import { usePlayers } from "@/hooks/usePlayers";
 import { LobbyPage } from "@/components/lobby/LobbyPage";
+import { RoleReveal } from "@/components/game/RoleReveal";
+import { DescriptionPhase } from "@/components/game/DescriptionPhase";
+import { DiscussionPhase } from "@/components/game/DiscussionPhase";
+import { VotePhase } from "@/components/game/VotePhase";
+import { FinalDefense } from "@/components/game/FinalDefense";
+import { ResultPage } from "@/components/result/ResultPage";
 import type { PlayerSession } from "@/types/game";
 
 function LoadingScreen() {
@@ -50,34 +57,62 @@ export default function RoomPage() {
 
   const room = useRoom(roomId);
   const players = usePlayers(roomId);
+  const { descriptions, messages, votes } = useGameStore();
 
   if (!hydrated || !session) return <LoadingScreen />;
   if (!room) return <LoadingScreen />;
 
+  const commonProps = {
+    room,
+    players,
+    currentPlayerId: session.playerId,
+    sessionToken: session.sessionToken,
+  };
+
   // phase별 컴포넌트 분기
   switch (room.phase) {
     case "waiting":
-      return (
-        <LobbyPage
-          room={room}
-          players={players}
-          currentPlayerId={session.playerId}
-          sessionToken={session.sessionToken}
-        />
-      );
+      return <LobbyPage {...commonProps} />;
 
     case "role_reveal":
-    case "description":
-    case "discussion":
-    case "vote":
-    case "final_defense":
-    case "result":
-      // Sprint 3에서 구현
       return (
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <p className="text-muted-foreground">
-            [{room.phase}] 단계 — Sprint 3에서 구현 예정
-          </p>
+        <div className="max-w-4xl mx-auto px-4 py-6">
+          <RoleReveal {...commonProps} />
+        </div>
+      );
+
+    case "description":
+      return (
+        <div className="max-w-4xl mx-auto px-4 py-6">
+          <DescriptionPhase {...commonProps} descriptions={descriptions} />
+        </div>
+      );
+
+    case "discussion":
+      return (
+        <div className="max-w-4xl mx-auto px-4 py-6">
+          <DiscussionPhase {...commonProps} descriptions={descriptions} messages={messages} />
+        </div>
+      );
+
+    case "vote":
+      return (
+        <div className="max-w-4xl mx-auto px-4 py-6">
+          <VotePhase {...commonProps} votes={votes} />
+        </div>
+      );
+
+    case "final_defense":
+      return (
+        <div className="max-w-4xl mx-auto px-4 py-6">
+          <FinalDefense {...commonProps} />
+        </div>
+      );
+
+    case "result":
+      return (
+        <div className="max-w-4xl mx-auto px-4 py-6">
+          <ResultPage {...commonProps} votes={votes} />
         </div>
       );
   }

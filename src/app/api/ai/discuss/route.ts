@@ -81,11 +81,16 @@ export async function POST(req: NextRequest) {
 
   const content = aiText ?? FALLBACK_MESSAGES[Math.floor(Math.random() * FALLBACK_MESSAGES.length)];
 
-  await supabase.from("messages").insert({
+  const { error: msgError } = await supabase.from("messages").insert({
     room_id: roomId,
     player_id: aiPlayerId,
     content,
   });
+
+  if (msgError) {
+    console.error("[ai/discuss] messages insert error:", msgError.message);
+    return NextResponse.json({ error: "메시지 저장 실패" }, { status: 500 });
+  }
 
   return NextResponse.json({ ok: true, content });
 }

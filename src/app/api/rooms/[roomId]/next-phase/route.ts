@@ -48,10 +48,12 @@ export async function POST(
   switch (room.phase) {
     case "role_reveal": {
       // role_reveal → description
+      // .eq("phase", "role_reveal"): 동시 요청 중 먼저 실행된 것만 반영 (낙관적 잠금)
       await supabase
         .from("rooms")
         .update({ phase: "description", phase_started_at: now })
-        .eq("id", roomId);
+        .eq("id", roomId)
+        .eq("phase", "role_reveal");
       break;
     }
 
@@ -60,7 +62,8 @@ export async function POST(
       await supabase
         .from("rooms")
         .update({ phase: "discussion", current_turn_player_id: null, phase_started_at: now })
-        .eq("id", roomId);
+        .eq("id", roomId)
+        .eq("phase", "description");
       break;
     }
 
@@ -69,7 +72,8 @@ export async function POST(
       await supabase
         .from("rooms")
         .update({ phase: "vote", phase_started_at: now })
-        .eq("id", roomId);
+        .eq("id", roomId)
+        .eq("phase", "discussion");
       break;
     }
 
@@ -165,7 +169,8 @@ export async function POST(
           result,
           phase_started_at: now,
         })
-        .eq("id", roomId);
+        .eq("id", roomId)
+        .eq("phase", "vote");
       break;
     }
 
@@ -188,7 +193,8 @@ export async function POST(
       await supabase
         .from("rooms")
         .update({ phase: "result", result, phase_started_at: now })
-        .eq("id", roomId);
+        .eq("id", roomId)
+        .eq("phase", "final_defense");
       break;
     }
 

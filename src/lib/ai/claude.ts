@@ -45,8 +45,9 @@ export async function callClaude(options: AiCallOptions): Promise<string | null>
     const block = message.content[0];
     if (block.type === "text") return block.text.trim();
     return null;
-  } catch {
+  } catch (err) {
     clearTimeout(timer);
+    console.error("[callClaude] error:", err instanceof Error ? err.message : String(err));
     return null;
   }
 }

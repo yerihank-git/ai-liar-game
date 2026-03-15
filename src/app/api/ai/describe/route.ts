@@ -99,24 +99,34 @@ export async function POST(req: NextRequest) {
 
   // 설명 저장 + 다음 턴 전환
   const turnNumber = (descriptions?.length ?? 0) + 1;
-  await supabase.from("descriptions").insert({
+  const { error: descError } = await supabase.from("descriptions").insert({
     room_id: roomId,
     player_id: aiPlayer.id,
     content,
     turn_number: turnNumber,
   });
 
+  if (descError) {
+    console.error("[ai/describe] descriptions insert error:", descError.message);
+    return NextResponse.json({ error: "설명 저장 실패" }, { status: 500 });
+  }
+
   const nextPlayerId = getNextTurnPlayerId(room.turn_order, aiPlayer.id);
-  if (nextPlayerId) {
-    await supabase
-      .from("rooms")
-      .update({ current_turn_player_id: nextPlayerId, phase_started_at: new Date().toISOString() })
-      .eq("id", roomId);
-  } else {
-    await supabase
-      .from("rooms")
-      .update({ phase: "discussion", current_turn_player_id: null, phase_started_at: new Date().toISOString() })
-      .eq("id", roomId);
+  const { error: roomError } = nextPlayerId
+    ? await supabase
+        .from("rooms")
+        .update({ current_turn_player_id: nextPlayerId, phase_started_at: new Date().toISOString() })
+        .eq("id", roomId)
+        .eq("phase", "description")
+    : await supabase
+        .from("rooms")
+        .update({ phase: "discussion", current_turn_player_id: null, phase_started_at: new Date().toISOString() })
+        .eq("id", roomId)
+        .eq("phase", "description");
+
+  if (roomError) {
+    console.error("[ai/describe] rooms update error:", roomError.message);
+    return NextResponse.json({ error: "게임 상태 업데이트 실패" }, { status: 500 });
   }
 
   return NextResponse.json({ ok: true, content });

@@ -16,6 +16,7 @@ export function VotePhase({ room, players, votes, currentPlayerId, sessionToken 
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [voted, setVoted] = useState(false);
+  const [voteError, setVoteError] = useState("");
 
   const myVote = votes.find((v) => v.voter_id === currentPlayerId);
   const hasVoted = voted || !!myVote;
@@ -42,14 +43,22 @@ export function VotePhase({ room, players, votes, currentPlayerId, sessionToken 
     if (hasVoted || isSubmitting) return;
     setSelectedId(targetId);
     setIsSubmitting(true);
+    setVoteError("");
     try {
       const res = await fetch(`/api/rooms/${room.id}/vote`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ sessionToken, targetId }),
       });
-      if (res.ok) setVoted(true);
-      else setSelectedId(null);
+      if (res.ok) {
+        setVoted(true);
+      } else {
+        setSelectedId(null);
+        setVoteError("투표에 실패했습니다. 다시 시도해주세요.");
+      }
+    } catch {
+      setSelectedId(null);
+      setVoteError("네트워크 오류가 발생했습니다.");
     } finally {
       setIsSubmitting(false);
     }
@@ -60,22 +69,23 @@ export function VotePhase({ room, players, votes, currentPlayerId, sessionToken 
   return (
     <div className="max-w-xl mx-auto space-y-6">
       {/* 헤더 */}
-      <div className="flex items-center justify-between">
-        <div>
-          <p className="text-xs tracking-[0.3em] uppercase opacity-40" style={{ fontFamily: "var(--font-game-mono, monospace)" }}>
-            투표 단계
-          </p>
-          <h2 className="text-xl font-bold" style={{ fontFamily: "var(--font-bebas, sans-serif)", letterSpacing: "0.1em" }}>
-            라이어를 지목하세요
-          </h2>
-        </div>
-        <div className="flex flex-col items-end gap-1">
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-xs tracking-[0.3em] uppercase opacity-40" style={{ fontFamily: "var(--font-game-mono, monospace)" }}>
+              투표 단계
+            </p>
+            <h2 className="text-xl font-bold" style={{ fontFamily: "var(--font-bebas, sans-serif)", letterSpacing: "0.1em" }}>
+              라이어를 지목하세요
+            </h2>
+          </div>
           <span className="text-2xl font-bold tabular-nums" style={{ fontFamily: "var(--font-game-mono, monospace)", color: timerColor }}>
             {remainingSec}
           </span>
-          <div className="w-16 h-1 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.1)" }}>
-            <div className="h-full rounded-full transition-all" style={{ width: `${progress * 100}%`, background: timerColor }} />
-          </div>
+        </div>
+        {/* 전체 너비 프로그레스 바 */}
+        <div className="w-full h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.08)" }}>
+          <div className="h-full rounded-full transition-all duration-500" style={{ width: `${progress * 100}%`, background: timerColor }} />
         </div>
       </div>
 
@@ -144,10 +154,22 @@ export function VotePhase({ room, players, votes, currentPlayerId, sessionToken 
           })}
       </div>
 
-      {hasVoted && (
-        <p className="text-center text-sm opacity-50" style={{ fontFamily: "var(--font-game-mono, monospace)" }}>
-          투표 완료. 다른 플레이어를 기다리는 중...
+      {voteError && (
+        <p className="text-center text-sm" style={{ color: "var(--liar-red)", fontFamily: "var(--font-game-mono, monospace)" }}>
+          {voteError}
         </p>
+      )}
+
+      {hasVoted && (
+        <div className="flex items-center justify-center gap-2">
+          <div
+            className="w-4 h-4 rounded-full border border-transparent animate-spin"
+            style={{ borderTopColor: "var(--ai-teal)", borderRightColor: "rgba(6,214,160,0.3)" }}
+          />
+          <p className="text-sm opacity-50" style={{ fontFamily: "var(--font-game-mono, monospace)" }}>
+            투표 완료. 다른 플레이어를 기다리는 중...
+          </p>
+        </div>
       )}
     </div>
   );

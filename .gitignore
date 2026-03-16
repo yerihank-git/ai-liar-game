@@ -13,3 +13,6 @@ out/
 
 # 타입 생성 파일
 next-env.d.ts
+
+# TypeScript 증분 컴파일 캐시
+*.tsbuildinfo

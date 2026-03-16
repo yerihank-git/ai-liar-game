@@ -80,7 +80,7 @@ describe("POST /api/rooms", () => {
 
   it("정상 요청 → 201 + roomId/playerId 반환", async () => {
     const mock = makeSupabaseMock();
-    vi.mocked(createServerClient).mockReturnValue(mock as ReturnType<typeof createServerClient>);
+    vi.mocked(createServerClient).mockReturnValue(mock as unknown as ReturnType<typeof createServerClient>);
 
     // 방 코드 중복 확인: null → 코드 사용 가능
     mock._chain.single
@@ -138,7 +138,7 @@ describe("GET /api/rooms", () => {
 
   it("존재하지 않는 방 코드 → 404 반환", async () => {
     const mock = makeSupabaseMock();
-    vi.mocked(createServerClient).mockReturnValue(mock as ReturnType<typeof createServerClient>);
+    vi.mocked(createServerClient).mockReturnValue(mock as unknown as ReturnType<typeof createServerClient>);
     mock._chain.single.mockResolvedValueOnce({ data: null, error: null });
 
     const req = new NextRequest("http://localhost/api/rooms?code=NOTEXS");
@@ -151,7 +151,7 @@ describe("GET /api/rooms", () => {
 
   it("정상 코드 → 200 + roomId 반환", async () => {
     const mock = makeSupabaseMock();
-    vi.mocked(createServerClient).mockReturnValue(mock as ReturnType<typeof createServerClient>);
+    vi.mocked(createServerClient).mockReturnValue(mock as unknown as ReturnType<typeof createServerClient>);
     mock._chain.single.mockResolvedValueOnce({ data: { id: "room-uuid-1", phase: "waiting" }, error: null });
 
     const req = new NextRequest("http://localhost/api/rooms?code=ABC123");

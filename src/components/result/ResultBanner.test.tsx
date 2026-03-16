@@ -55,7 +55,7 @@ describe("ResultBanner 컴포넌트", () => {
 
   it("시민 승리 — 시민 플레이어는 '🎉 승리!' 표시", () => {
     const room = makeRoom({
-      result: { winner: "citizens", accused_player_id: "player-2", correct_guess: false, guessed_keyword: null },
+      result: { winner: "citizens" },
     });
     render(
       <ResultBanner
@@ -71,7 +71,7 @@ describe("ResultBanner 컴포넌트", () => {
 
   it("시민 승리 — 라이어 플레이어는 '😔 패배' 표시", () => {
     const room = makeRoom({
-      result: { winner: "citizens", accused_player_id: "player-1", correct_guess: false, guessed_keyword: null },
+      result: { winner: "citizens" },
     });
     render(
       <ResultBanner
@@ -87,7 +87,7 @@ describe("ResultBanner 컴포넌트", () => {
 
   it("라이어 승리 (역전) — 맞힌 키워드 텍스트 표시", () => {
     const room = makeRoom({
-      result: { winner: "liar", accused_player_id: "player-1", correct_guess: true, guessed_keyword: "사과" },
+      result: { winner: "liar", correct_guess: true, guessed_keyword: "사과" },
     });
     render(
       <ResultBanner
@@ -105,7 +105,7 @@ describe("ResultBanner 컴포넌트", () => {
   it("바보 승리 — 바보 플레이어는 '🎉 승리!' 표시", () => {
     const room = makeRoom({
       mode: "fool",
-      result: { winner: "fool", accused_player_id: null, correct_guess: false, guessed_keyword: null },
+      result: { winner: "fool" },
     });
     render(
       <ResultBanner
@@ -121,7 +121,7 @@ describe("ResultBanner 컴포넌트", () => {
 
   it("AI 플레이어는 승패 배지를 표시하지 않음", () => {
     const room = makeRoom({
-      result: { winner: "citizens", accused_player_id: "player-2", correct_guess: false, guessed_keyword: null },
+      result: { winner: "citizens" },
     });
     render(
       <ResultBanner

@@ -146,7 +146,7 @@ describe("POST /api/rooms/[roomId]/start", () => {
 
   it("방 없음 → 404 반환", async () => {
     const mock = makeMock({ room: null, hostPlayer: null });
-    vi.mocked(createServerClient).mockReturnValue(mock as ReturnType<typeof createServerClient>);
+    vi.mocked(createServerClient).mockReturnValue(mock as unknown as ReturnType<typeof createServerClient>);
 
     const res = await POST(makeRequest({ sessionToken: HOST_SESSION }), makeParams());
     expect(res.status).toBe(404);
@@ -157,7 +157,7 @@ describe("POST /api/rooms/[roomId]/start", () => {
       room: { id: ROOM_ID, phase: "description", mode: "classic", category: "음식" },
       hostPlayer: null,
     });
-    vi.mocked(createServerClient).mockReturnValue(mock as ReturnType<typeof createServerClient>);
+    vi.mocked(createServerClient).mockReturnValue(mock as unknown as ReturnType<typeof createServerClient>);
 
     const res = await POST(makeRequest({ sessionToken: HOST_SESSION }), makeParams());
     expect(res.status).toBe(400);
@@ -170,7 +170,7 @@ describe("POST /api/rooms/[roomId]/start", () => {
       room: { id: ROOM_ID, phase: "waiting", mode: "classic", category: "음식" },
       hostPlayer: null, // 방장 조회 실패
     });
-    vi.mocked(createServerClient).mockReturnValue(mock as ReturnType<typeof createServerClient>);
+    vi.mocked(createServerClient).mockReturnValue(mock as unknown as ReturnType<typeof createServerClient>);
 
     const res = await POST(makeRequest({ sessionToken: "non-host-token" }), makeParams());
     expect(res.status).toBe(403);
@@ -186,7 +186,7 @@ describe("POST /api/rooms/[roomId]/start", () => {
       hostPlayer: { id: "host-id" },
       players, // 2명만
     });
-    vi.mocked(createServerClient).mockReturnValue(mock as ReturnType<typeof createServerClient>);
+    vi.mocked(createServerClient).mockReturnValue(mock as unknown as ReturnType<typeof createServerClient>);
 
     const res = await POST(makeRequest({ sessionToken: HOST_SESSION }), makeParams());
     expect(res.status).toBe(400);
@@ -206,7 +206,7 @@ describe("POST /api/rooms/[roomId]/start", () => {
       hostPlayer: { id: "p1" },
       players,
     });
-    vi.mocked(createServerClient).mockReturnValue(mock as ReturnType<typeof createServerClient>);
+    vi.mocked(createServerClient).mockReturnValue(mock as unknown as ReturnType<typeof createServerClient>);
 
     const res = await POST(makeRequest({ sessionToken: HOST_SESSION }), makeParams());
     expect(res.status).toBe(200);
@@ -226,7 +226,7 @@ describe("POST /api/rooms/[roomId]/start", () => {
       hostPlayer: { id: "p1" },
       players,
     });
-    vi.mocked(createServerClient).mockReturnValue(mock as ReturnType<typeof createServerClient>);
+    vi.mocked(createServerClient).mockReturnValue(mock as unknown as ReturnType<typeof createServerClient>);
 
     // fetch 실패 → 폴백 키워드 사용
     (global.fetch as ReturnType<typeof vi.fn>).mockResolvedValue({ ok: false });
@@ -250,7 +250,7 @@ describe("POST /api/rooms/[roomId]/start", () => {
       players,
       updateErr: { message: "DB error" },
     });
-    vi.mocked(createServerClient).mockReturnValue(mock as ReturnType<typeof createServerClient>);
+    vi.mocked(createServerClient).mockReturnValue(mock as unknown as ReturnType<typeof createServerClient>);
 
     const res = await POST(makeRequest({ sessionToken: HOST_SESSION }), makeParams());
     expect(res.status).toBe(500);

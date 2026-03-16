@@ -150,7 +150,7 @@ describe("POST /api/rooms/[roomId]/vote", () => {
 
   it("방이 vote 단계가 아님 → 400 반환", async () => {
     const mock = makeMock({ room: { id: ROOM_ID, phase: "discussion", mode: "classic" }, voter: null });
-    vi.mocked(createServerClient).mockReturnValue(mock as ReturnType<typeof createServerClient>);
+    vi.mocked(createServerClient).mockReturnValue(mock as unknown as ReturnType<typeof createServerClient>);
 
     const res = await POST(
       makeRequest({ sessionToken: "tok", targetId: TARGET_ID }),
@@ -163,7 +163,7 @@ describe("POST /api/rooms/[roomId]/vote", () => {
 
   it("방이 존재하지 않음 → 400 반환", async () => {
     const mock = makeMock({ room: null, voter: null });
-    vi.mocked(createServerClient).mockReturnValue(mock as ReturnType<typeof createServerClient>);
+    vi.mocked(createServerClient).mockReturnValue(mock as unknown as ReturnType<typeof createServerClient>);
 
     const res = await POST(
       makeRequest({ sessionToken: "tok", targetId: TARGET_ID }),
@@ -174,7 +174,7 @@ describe("POST /api/rooms/[roomId]/vote", () => {
 
   it("투표자를 찾을 수 없음 → 403 반환", async () => {
     const mock = makeMock({ room: { id: ROOM_ID, phase: "vote", mode: "classic" }, voter: null });
-    vi.mocked(createServerClient).mockReturnValue(mock as ReturnType<typeof createServerClient>);
+    vi.mocked(createServerClient).mockReturnValue(mock as unknown as ReturnType<typeof createServerClient>);
 
     const res = await POST(
       makeRequest({ sessionToken: "invalid-tok", targetId: TARGET_ID }),
@@ -190,7 +190,7 @@ describe("POST /api/rooms/[roomId]/vote", () => {
       room: { id: ROOM_ID, phase: "vote", mode: "classic" },
       voter: { id: VOTER_ID },
     });
-    vi.mocked(createServerClient).mockReturnValue(mock as ReturnType<typeof createServerClient>);
+    vi.mocked(createServerClient).mockReturnValue(mock as unknown as ReturnType<typeof createServerClient>);
 
     // targetId를 voter와 동일하게 설정
     const res = await POST(
@@ -208,7 +208,7 @@ describe("POST /api/rooms/[roomId]/vote", () => {
       voter: { id: VOTER_ID },
       voteErr: { message: "DB error" },
     });
-    vi.mocked(createServerClient).mockReturnValue(mock as ReturnType<typeof createServerClient>);
+    vi.mocked(createServerClient).mockReturnValue(mock as unknown as ReturnType<typeof createServerClient>);
 
     const res = await POST(
       makeRequest({ sessionToken: "tok", targetId: TARGET_ID }),
@@ -232,7 +232,7 @@ describe("POST /api/rooms/[roomId]/vote", () => {
       allPlayers,
       allVotes,
     });
-    vi.mocked(createServerClient).mockReturnValue(mock as ReturnType<typeof createServerClient>);
+    vi.mocked(createServerClient).mockReturnValue(mock as unknown as ReturnType<typeof createServerClient>);
 
     const res = await POST(
       makeRequest({ sessionToken: "tok", targetId: TARGET_ID }),
@@ -258,7 +258,7 @@ describe("POST /api/rooms/[roomId]/vote", () => {
       allPlayers,
       allVotes,
     });
-    vi.mocked(createServerClient).mockReturnValue(mock as ReturnType<typeof createServerClient>);
+    vi.mocked(createServerClient).mockReturnValue(mock as unknown as ReturnType<typeof createServerClient>);
 
     const res = await POST(
       makeRequest({ sessionToken: "tok", targetId: TARGET_ID }),
@@ -283,7 +283,7 @@ describe("POST /api/rooms/[roomId]/vote", () => {
       allVotes,
       accusedRole: "liar",
     });
-    vi.mocked(createServerClient).mockReturnValue(mock as ReturnType<typeof createServerClient>);
+    vi.mocked(createServerClient).mockReturnValue(mock as unknown as ReturnType<typeof createServerClient>);
 
     const res = await POST(
       makeRequest({ sessionToken: "tok", targetId: TARGET_ID }),
@@ -308,7 +308,7 @@ describe("POST /api/rooms/[roomId]/vote", () => {
       allVotes,
       accusedRole: "citizen", // 라이어가 아님
     });
-    vi.mocked(createServerClient).mockReturnValue(mock as ReturnType<typeof createServerClient>);
+    vi.mocked(createServerClient).mockReturnValue(mock as unknown as ReturnType<typeof createServerClient>);
 
     const res = await POST(
       makeRequest({ sessionToken: "tok", targetId: TARGET_ID }),

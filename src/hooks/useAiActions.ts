@@ -16,6 +16,7 @@ interface UseAiActionsParams {
  */
 export function useAiActions({ room, players, isHost }: UseAiActionsParams) {
   const triggeredRef = useRef<Set<string>>(new Set());
+  const timerIdsRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   useEffect(() => {
     if (!room || !isHost) return;
@@ -35,7 +36,7 @@ export function useAiActions({ room, players, isHost }: UseAiActionsParams) {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ roomId: room.id }),
-        }).catch(() => {});
+        }).catch((err) => console.error("[useAiActions] describe failed:", err));
       }
     }
 
@@ -51,25 +52,23 @@ export function useAiActions({ room, players, isHost }: UseAiActionsParams) {
         const delay1 = Math.max(0, room.discussion_timer_sec / 3 - elapsed) * 1000 + idx * 2000;
         const delay2 = Math.max(0, (room.discussion_timer_sec * 2) / 3 - elapsed) * 1000 + idx * 2000;
 
-        setTimeout(() => {
-          if (room.phase === "discussion") {
-            fetch(`/api/ai/discuss`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ roomId: room.id, aiPlayerId: ai.id }),
-            }).catch(() => {});
-          }
+        const id1 = setTimeout(() => {
+          fetch(`/api/ai/discuss`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ roomId: room.id, aiPlayerId: ai.id }),
+          }).catch((err) => console.error("[useAiActions] discuss failed:", err));
         }, delay1);
 
-        setTimeout(() => {
-          if (room.phase === "discussion") {
-            fetch(`/api/ai/discuss`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ roomId: room.id, aiPlayerId: ai.id }),
-            }).catch(() => {});
-          }
+        const id2 = setTimeout(() => {
+          fetch(`/api/ai/discuss`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ roomId: room.id, aiPlayerId: ai.id }),
+          }).catch((err) => console.error("[useAiActions] discuss failed:", err));
         }, delay2);
+
+        timerIdsRef.current.push(id1, id2);
       });
     }
 
@@ -77,14 +76,21 @@ export function useAiActions({ room, players, isHost }: UseAiActionsParams) {
     if (room.phase === "vote") {
       triggeredRef.current.add(key);
       aiPlayers.forEach((ai, idx) => {
-        setTimeout(() => {
+        const id = setTimeout(() => {
           fetch(`/api/ai/vote`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ roomId: room.id, aiPlayerId: ai.id }),
-          }).catch(() => {});
+          }).catch((err) => console.error("[useAiActions] vote failed:", err));
         }, (idx + 1) * 1500);
+        timerIdsRef.current.push(id);
       });
     }
+
+    return () => {
+      // phase 변경 시 미실행 타이머 취소
+      timerIdsRef.current.forEach(clearTimeout);
+      timerIdsRef.current = [];
+    };
   }, [room?.phase, room?.current_turn_player_id, room?.phase_started_at]); // eslint-disable-line react-hooks/exhaustive-deps
 }

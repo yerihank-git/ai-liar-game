@@ -1,10 +1,17 @@
 # LiarGame AI
 
 [![CI](https://github.com/yerihank-git/ai-liar-game/actions/workflows/ci.yml/badge.svg)](https://github.com/yerihank-git/ai-liar-game/actions/workflows/ci.yml)
+[![Deploy](https://github.com/yerihank-git/ai-liar-game/actions/workflows/deploy.yml/badge.svg)](https://github.com/yerihank-git/ai-liar-game/actions/workflows/deploy.yml)
 
 > **AI가 플레이어로 참여하는 실시간 멀티플레이어 라이어게임 웹앱**
 
 친구들과 링크 하나로 즉시 라이어게임을 시작할 수 있으며, AI가 플레이어로 참여하여 인원이 부족해도 게임을 즐길 수 있고, AI의 실시간 분석으로 게임의 재미와 전략적 깊이를 더합니다.
+
+## 라이브 데모
+
+**[https://ai-liar-game.vercel.app](https://ai-liar-game.vercel.app)**
+
+> 회원가입 없이 바로 플레이 가능합니다. 닉네임만 입력하면 시작!
 
 ---
 
@@ -250,11 +257,19 @@ npm run test       # Vitest 테스트 실행
 
 ### CI/CD
 
-GitHub Actions로 자동화된 파이프라인:
+GitHub Actions로 자동화된 두 단계 파이프라인:
 
 ```
-push/PR → 의존성 설치 → 린트 → 타입 체크 → 테스트 → 빌드 → Vercel 배포
+[CI 워크플로우] push/PR 시 실행
+  → 의존성 설치 → 린트 → 타입 체크 → 테스트(커버리지) → 빌드
+
+[Deploy 워크플로우] CI 성공 시 자동 트리거 (main 브랜치 한정)
+  → Vercel 프로덕션 빌드 → https://ai-liar-game.vercel.app 배포
 ```
+
+- **안전 배포**: CI 실패 시 배포 워크플로우가 실행되지 않음 (`workflow_run` 의존성)
+- **중복 방지**: `concurrency` 설정으로 동시 배포 방지
+- **환경 변수**: GitHub Secrets에 Supabase/Anthropic API 키 주입 (`VERCEL_TOKEN`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `ANTHROPIC_API_KEY`)
 
 ---
 
@@ -281,13 +296,27 @@ push/PR → 의존성 설치 → 린트 → 타입 체크 → 테스트 → 빌�
 
 ---
 
+## 구현 완료 현황
+
+MVP 기능 F001~F017 전체 구현 완료. 프로덕션 배포: [https://ai-liar-game.vercel.app](https://ai-liar-game.vercel.app)
+
+| 구분 | 기능 | 상태 |
+| ---- | ---- | ---- |
+| 핵심 | 방 생성/입장, 초대 링크, 게임 모드, AI 플레이어, 키워드 시스템 | ✅ |
+| 핵심 | 역할 배정, 턴제 설명, AI 설명 생성, 투표, 정답 맞히기, 결과 발표 | ✅ |
+| 핵심 | Supabase Realtime 실시간 동기화 | ✅ |
+| 지원 | 토론 채팅 (AI 참여), 게임 타이머, AI 사후 분석, 다시하기, 플레이어 상태 | ✅ |
+| 향후 | AI 의심도 힌트, 커스텀 키워드, 게임 히스토리, 관전 모드, 음성 채팅 | 📋 백로그 |
+
+---
+
 ## 문서
 
 | 문서        | 경로               | 설명                                                |
 | ----------- | ------------------ | --------------------------------------------------- |
 | 상세 PRD    | `docs/prd.md`      | MVP 기능 명세, 데이터 모델, AI 연동, 게임 상태 머신 |
 | 메타 PRD    | `docs/prd_meta.md` | 린캔버스 정의, PRD 작성 요청 구조                   |
-| 로드맵      | `ROADMAP.md`       | 6주 3 Phase 개발 로드맵, 마일스톤                   |
+| 로드맵      | `ROADMAP.md`       | 개발 로드맵, 마일스톤 완료 현황                     |
 | AI 컨텍스트 | `CLAUDE.md`        | AI 코딩 에이전트용 프로젝트 컨텍스트                |
 
 ---

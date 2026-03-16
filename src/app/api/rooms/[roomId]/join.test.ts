@@ -100,7 +100,7 @@ describe("POST /api/rooms/[roomId]/join", () => {
 
   it("존재하지 않는 방 → 404 반환", async () => {
     const mock = makeMock({ room: null });
-    vi.mocked(createServerClient).mockReturnValue(mock as ReturnType<typeof createServerClient>);
+    vi.mocked(createServerClient).mockReturnValue(mock as unknown as ReturnType<typeof createServerClient>);
 
     const res = await POST(makeRequest({ nickname: "테스터", sessionToken: "tok" }), makeParams());
     expect(res.status).toBe(404);
@@ -108,7 +108,7 @@ describe("POST /api/rooms/[roomId]/join", () => {
 
   it("게임 진행 중인 방 → 409 반환", async () => {
     const mock = makeMock({ room: { id: ROOM_ID, phase: "description", max_players: 8 } });
-    vi.mocked(createServerClient).mockReturnValue(mock as ReturnType<typeof createServerClient>);
+    vi.mocked(createServerClient).mockReturnValue(mock as unknown as ReturnType<typeof createServerClient>);
 
     const res = await POST(makeRequest({ nickname: "테스터", sessionToken: "tok" }), makeParams());
     expect(res.status).toBe(409);
@@ -121,7 +121,7 @@ describe("POST /api/rooms/[roomId]/join", () => {
       room: { id: ROOM_ID, phase: "waiting", max_players: 8 },
       playerCount: 8,
     });
-    vi.mocked(createServerClient).mockReturnValue(mock as ReturnType<typeof createServerClient>);
+    vi.mocked(createServerClient).mockReturnValue(mock as unknown as ReturnType<typeof createServerClient>);
 
     const res = await POST(makeRequest({ nickname: "테스터", sessionToken: "tok" }), makeParams());
     expect(res.status).toBe(409);
@@ -135,7 +135,7 @@ describe("POST /api/rooms/[roomId]/join", () => {
       playerCount: 2,
       existingPlayer: { id: "player-uuid-1" },
     });
-    vi.mocked(createServerClient).mockReturnValue(mock as ReturnType<typeof createServerClient>);
+    vi.mocked(createServerClient).mockReturnValue(mock as unknown as ReturnType<typeof createServerClient>);
 
     const res = await POST(makeRequest({ nickname: "테스터", sessionToken: "existing-tok" }), makeParams());
     expect(res.status).toBe(200);
@@ -150,7 +150,7 @@ describe("POST /api/rooms/[roomId]/join", () => {
       existingPlayer: null,
       newPlayer: { id: "new-player-uuid" },
     });
-    vi.mocked(createServerClient).mockReturnValue(mock as ReturnType<typeof createServerClient>);
+    vi.mocked(createServerClient).mockReturnValue(mock as unknown as ReturnType<typeof createServerClient>);
 
     const res = await POST(makeRequest({ nickname: "새플레이어", sessionToken: "new-tok" }), makeParams());
     expect(res.status).toBe(201);

@@ -121,11 +121,21 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  // 분석 결과 저장
-  await supabase.from("game_analyses").insert({
+  // 분석 결과 저장 (동시 요청 중복 insert 대응: 실패 시 기저장 데이터 반환)
+  const { error: insertError } = await supabase.from("game_analyses").insert({
     room_id: roomId,
     analysis_content: analysis,
   });
+
+  if (insertError) {
+    // 동시 요청으로 인한 중복 insert — 먼저 저장된 분석 반환
+    const { data: saved } = await supabase
+      .from("game_analyses")
+      .select("analysis_content")
+      .eq("room_id", roomId)
+      .single();
+    return NextResponse.json({ analysis: saved?.analysis_content ?? analysis });
+  }
 
   return NextResponse.json({ analysis });
 }

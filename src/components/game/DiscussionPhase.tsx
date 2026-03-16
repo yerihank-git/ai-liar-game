@@ -38,7 +38,7 @@ export function DiscussionPhase({
     });
   }, [isHost, room.id, sessionToken]);
 
-  const { remainingSec } = useTimer({
+  const { remainingSec, progress } = useTimer({
     startedAt: room.phase_started_at,
     durationSec: room.discussion_timer_sec,
     onExpire: handleExpire,
@@ -75,18 +75,27 @@ export function DiscussionPhase({
   return (
     <div className="flex flex-col gap-4" style={{ height: "calc(100dvh - 160px)", minHeight: "400px" }}>
       {/* 헤더 */}
-      <div className="flex items-center justify-between shrink-0">
-        <div>
-          <p className="text-xs tracking-[0.3em] uppercase opacity-40" style={{ fontFamily: "var(--font-game-mono, monospace)" }}>
-            토론 단계
-          </p>
-          <h2 className="text-xl font-bold" style={{ fontFamily: "var(--font-bebas, sans-serif)", letterSpacing: "0.1em" }}>
-            누가 라이어일까요?
-          </h2>
+      <div className="shrink-0 space-y-2">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-xs tracking-[0.3em] uppercase opacity-40" style={{ fontFamily: "var(--font-game-mono, monospace)" }}>
+              토론 단계
+            </p>
+            <h2 className="text-xl font-bold" style={{ fontFamily: "var(--font-bebas, sans-serif)", letterSpacing: "0.1em" }}>
+              누가 라이어일까요?
+            </h2>
+          </div>
+          <span className="text-2xl font-bold tabular-nums" style={{ fontFamily: "var(--font-game-mono, monospace)", color: timerColor }}>
+            {formatTime(remainingSec)}
+          </span>
         </div>
-        <span className="text-2xl font-bold tabular-nums" style={{ fontFamily: "var(--font-game-mono, monospace)", color: timerColor }}>
-          {formatTime(remainingSec)}
-        </span>
+        {/* 전체 너비 프로그레스 바 */}
+        <div className="w-full h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.08)" }}>
+          <div
+            className="h-full rounded-full transition-all duration-500"
+            style={{ width: `${progress * 100}%`, background: timerColor }}
+          />
+        </div>
       </div>
 
       {/* 설명 요약 (접기/펼치기) */}

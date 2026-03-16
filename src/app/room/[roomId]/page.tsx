@@ -18,8 +18,14 @@ import type { PlayerSession } from "@/types/game";
 
 function LoadingScreen() {
   return (
-    <div className="flex items-center justify-center min-h-[60vh]">
-      <div className="text-muted-foreground animate-pulse">로딩 중...</div>
+    <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+      <div
+        className="w-10 h-10 rounded-full border-2 border-transparent animate-spin"
+        style={{ borderTopColor: "var(--ai-teal)", borderRightColor: "rgba(6,214,160,0.3)" }}
+      />
+      <p className="text-sm opacity-40" style={{ fontFamily: "var(--font-game-mono, monospace)" }}>
+        로딩 중...
+      </p>
     </div>
   );
 }

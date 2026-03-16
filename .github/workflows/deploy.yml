@@ -1,17 +1,29 @@
 name: Deploy
 
+# CI 워크플로우가 main 브랜치에서 성공적으로 완료된 후에만 배포
 on:
-  push:
+  workflow_run:
+    workflows: ["CI"]
     branches: [main]
+    types: [completed]
+
+# 동시 배포 방지 — 이전 배포 완료 후 다음 배포 순차 실행
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
 
 jobs:
   deploy:
     name: Vercel 프로덕션 배포
     runs-on: ubuntu-latest
     environment: production
+    # CI 워크플로우가 성공했을 때만 배포 실행
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
 
       - uses: actions/setup-node@v4
         with:
@@ -31,4 +43,17 @@ jobs:
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: 프로덕션 배포
-        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+        id: deploy
+        run: |
+          DEPLOY_URL=$(vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }})
+          echo "url=$DEPLOY_URL" >> $GITHUB_OUTPUT
+
+      - name: 배포 결과 요약
+        run: |
+          echo "## 🚀 프로덕션 배포 완료" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| 항목 | 값 |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|-----|" >> $GITHUB_STEP_SUMMARY
+          echo "| 배포 URL | https://ai-liar-game.vercel.app |" >> $GITHUB_STEP_SUMMARY
+          echo "| 커밋 | \`${{ github.event.workflow_run.head_sha }}\` |" >> $GITHUB_STEP_SUMMARY
+          echo "| CI 상태 | ✅ 통과 후 배포 |" >> $GITHUB_STEP_SUMMARY

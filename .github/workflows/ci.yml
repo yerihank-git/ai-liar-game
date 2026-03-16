@@ -6,6 +6,11 @@ on:
   pull_request:
     branches: [main]
 
+# PR/브랜치 단위로 중복 실행 취소 (main push는 유지)
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
 jobs:
   ci:
     name: Lint · Typecheck · Test · Build
@@ -30,6 +35,13 @@ jobs:
 
       - name: 테스트 (커버리지 포함)
         run: npm test -- --run --coverage
+
+      - name: 테스트 결과 요약
+        if: always()
+        run: |
+          echo "## 테스트 결과" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          npm test -- --run --reporter=verbose 2>&1 | grep -E "(✓|✗|PASS|FAIL|Tests)" | head -20 >> $GITHUB_STEP_SUMMARY || true
 
       - name: 커버리지 리포트 업로드
         uses: actions/upload-artifact@v4

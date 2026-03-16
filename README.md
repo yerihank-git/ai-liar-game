@@ -1,6 +1,7 @@
 # LiarGame AI
 
 [![CI](https://github.com/yerihank-git/ai-liar-game/actions/workflows/ci.yml/badge.svg)](https://github.com/yerihank-git/ai-liar-game/actions/workflows/ci.yml)
+[![Deploy](https://github.com/yerihank-git/ai-liar-game/actions/workflows/deploy.yml/badge.svg)](https://github.com/yerihank-git/ai-liar-game/actions/workflows/deploy.yml)
 
 > **AI가 플레이어로 참여하는 실시간 멀티플레이어 라이어게임 웹앱**
 
@@ -256,11 +257,19 @@ npm run test       # Vitest 테스트 실행
 
 ### CI/CD
 
-GitHub Actions로 자동화된 파이프라인:
+GitHub Actions로 자동화된 두 단계 파이프라인:
 
 ```
-push/PR → 의존성 설치 → 린트 → 타입 체크 → 테스트 → 빌드 → Vercel 배포
+[CI 워크플로우] push/PR 시 실행
+  → 의존성 설치 → 린트 → 타입 체크 → 테스트(커버리지) → 빌드
+
+[Deploy 워크플로우] CI 성공 시 자동 트리거 (main 브랜치 한정)
+  → Vercel 프로덕션 빌드 → https://ai-liar-game.vercel.app 배포
 ```
+
+- **안전 배포**: CI 실패 시 배포 워크플로우가 실행되지 않음 (`workflow_run` 의존성)
+- **중복 방지**: `concurrency` 설정으로 동시 배포 방지
+- **환경 변수**: GitHub Secrets에 Supabase/Anthropic API 키 주입 (`VERCEL_TOKEN`, `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `ANTHROPIC_API_KEY`)
 
 ---
 

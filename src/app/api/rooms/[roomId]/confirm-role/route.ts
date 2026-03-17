@@ -46,6 +46,13 @@ export async function POST(
     .update({ role_confirmed: true })
     .eq("id", player.id);
 
+  // 오프라인(접속 끊김) 플레이어는 자동 확인 완료 처리
+  await supabase
+    .from("players")
+    .update({ role_confirmed: true })
+    .eq("room_id", roomId)
+    .eq("is_connected", false);
+
   // 전원 확인 완료 여부 체크
   const { data: allPlayers } = await supabase
     .from("players")

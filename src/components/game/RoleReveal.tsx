@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import type { Room, Player } from "@/types/game";
 
@@ -36,9 +36,13 @@ const ROLE_CONFIG = {
 } as const;
 
 export function RoleReveal({ room, players, currentPlayerId, sessionToken }: RoleRevealProps) {
+  const AUTO_CONFIRM_SECONDS = 30;
+
   const [flipped, setFlipped] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(AUTO_CONFIRM_SECONDS);
+  const confirmedRef = useRef(false);
 
   const currentPlayer = players.find((p) => p.id === currentPlayerId);
   const role = currentPlayer?.role ?? "citizen";
@@ -48,7 +52,8 @@ export function RoleReveal({ room, players, currentPlayerId, sessionToken }: Rol
   const totalCount = players.length;
 
   const handleConfirm = async () => {
-    if (confirmed || isSubmitting) return;
+    if (confirmedRef.current || isSubmitting) return;
+    confirmedRef.current = true;
     setIsSubmitting(true);
     try {
       await fetch(`/api/rooms/${room.id}/confirm-role`, {
@@ -62,6 +67,18 @@ export function RoleReveal({ room, players, currentPlayerId, sessionToken }: Rol
       setIsSubmitting(false);
     }
   };
+
+  useEffect(() => {
+    if (confirmed) return;
+    if (timeLeft <= 0) {
+      setFlipped(true);
+      handleConfirm();
+      return;
+    }
+    const timer = setTimeout(() => setTimeLeft((t) => t - 1), 1000);
+    return () => clearTimeout(timer);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timeLeft, confirmed]);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] gap-8 px-4">
@@ -166,6 +183,24 @@ export function RoleReveal({ room, players, currentPlayerId, sessionToken }: Rol
           </div>
         </div>
       </div>
+
+      {/* 자동 확인 카운트다운 */}
+      {!confirmed && (
+        <div className="flex flex-col items-center gap-1">
+          <div className="w-48 h-1 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.08)" }}>
+            <div
+              className="h-full rounded-full transition-all duration-1000 ease-linear"
+              style={{
+                width: `${(timeLeft / AUTO_CONFIRM_SECONDS) * 100}%`,
+                background: timeLeft <= 10 ? "var(--liar-red)" : "rgba(255,255,255,0.3)",
+              }}
+            />
+          </div>
+          <p className="text-xs opacity-40" style={{ fontFamily: "var(--font-game-mono, monospace)" }}>
+            {timeLeft}초 후 자동 확인
+          </p>
+        </div>
+      )}
 
       {/* 확인 완료 버튼 */}
       {flipped && (

@@ -7,13 +7,13 @@ export const GAME_CONFIG = {
 
   // 타이머 옵션 (초)
   DESCRIPTION_TIMER_OPTIONS: [30, 60, 90] as const,
-  DISCUSSION_TIMER_OPTIONS: [60, 120, 180] as const,
+  DISCUSSION_TIMER_OPTIONS: [60, 90, 120] as const,
   VOTE_TIMER_OPTIONS: [15, 30] as const,
   FINAL_DEFENSE_TIMER_OPTIONS: [15, 30] as const,
 
   // 타이머 기본값 (초)
   DEFAULT_DESCRIPTION_TIMER: 30, // 설명 시간 기본값
-  DEFAULT_DISCUSSION_TIMER: 60, // 토론 시간 기본값
+  DEFAULT_DISCUSSION_TIMER: 90, // 토론 시간 기본값
   DEFAULT_VOTE_TIMER: 15, // 투표 시간 기본값
   DEFAULT_FINAL_DEFENSE_TIMER: 15, // 최후 변론 시간 기본값
 

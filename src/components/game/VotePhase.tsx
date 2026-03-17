@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useTimer } from "@/hooks/useTimer";
 import type { Room, Player, Vote } from "@/types/game";
 
@@ -23,15 +23,23 @@ export function VotePhase({ room, players, votes, currentPlayerId, sessionToken 
   const voteCount = votes.length;
   const totalCount = players.length;
 
+  // 동점 재투표 시 서버에서 votes가 삭제됨 → myVote가 사라지면 로컬 상태 초기화
+  useEffect(() => {
+    if (!myVote && voted) {
+      setVoted(false);
+      setSelectedId(null);
+    }
+  }, [myVote, voted]);
+
   const handleExpire = useCallback(async () => {
-    if (hasVoted) return;
-    // 타이머 만료 — 서버에서 미투표자 랜덤 처리
+    // 타이머 만료 시 모든 플레이어가 next-phase 호출.
+    // 미투표자 랜덤 처리와 낙관적 잠금(.eq("phase","vote"))은 API에서 처리.
     await fetch(`/api/rooms/${room.id}/next-phase`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ sessionToken }),
     });
-  }, [hasVoted, room.id, sessionToken]);
+  }, [room.id, sessionToken]);
 
   const { remainingSec, progress } = useTimer({
     startedAt: room.phase_started_at,

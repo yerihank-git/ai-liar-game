@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { createServerClient } from "@/lib/supabase/server";
-import { countVotes } from "@/lib/game-logic";
+import { countVotes, judgeClassic, judgeFool } from "@/lib/game-logic";
 import type { Vote } from "@/types/game";
 
 const bodySchema = z.object({
@@ -91,7 +91,7 @@ export async function POST(
       return NextResponse.json({ ok: true, tie: true });
     }
 
-    // 기본 모드: 최다 득표자가 라이어인지 확인 후 final_defense 또는 result
+    // 최다 득표자 역할 확인 후 다음 phase 및 result 결정
     const { data: accusedPlayer } = await supabase
       .from("players")
       .select("role")
@@ -99,9 +99,39 @@ export async function POST(
       .single();
 
     let nextPhase: string;
-    if (room.mode === "classic" && accusedPlayer?.role === "liar") {
-      nextPhase = "final_defense";
+    let result = null;
+
+    if (room.mode === "classic") {
+      if (accusedPlayer?.role === "liar") {
+        nextPhase = "final_defense";
+      } else {
+        // 라이어 미지목 → 라이어 승
+        const { data: liarPlayer } = await supabase
+          .from("players")
+          .select("id")
+          .eq("room_id", roomId)
+          .eq("role", "liar")
+          .single();
+        result = judgeClassic({
+          accusedPlayerId: topPlayerId,
+          liarPlayerId: liarPlayer?.id ?? "",
+          guessedKeyword: null,
+          actualKeyword: room.keyword ?? "",
+        });
+        nextPhase = "result";
+      }
     } else {
+      // 바보 모드
+      const { data: foolPlayer } = await supabase
+        .from("players")
+        .select("id")
+        .eq("room_id", roomId)
+        .eq("role", "fool")
+        .single();
+      result = judgeFool({
+        accusedPlayerId: topPlayerId,
+        foolPlayerId: foolPlayer?.id ?? "",
+      });
       nextPhase = "result";
     }
 
@@ -110,6 +140,7 @@ export async function POST(
       .update({
         phase: nextPhase,
         current_turn_player_id: topPlayerId,
+        result,
         phase_started_at: new Date().toISOString(),
       })
       .eq("id", roomId);

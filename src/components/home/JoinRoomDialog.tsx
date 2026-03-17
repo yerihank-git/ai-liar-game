@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,13 +19,21 @@ import type { JoinRoomResponse } from "@/types/game";
 interface JoinRoomDialogProps {
   children: React.ReactNode;
   initialRoomCode?: string;
+  defaultOpen?: boolean;
 }
 
-export function JoinRoomDialog({ children, initialRoomCode = "" }: JoinRoomDialogProps) {
+export function JoinRoomDialog({ children, initialRoomCode = "", defaultOpen = false }: JoinRoomDialogProps) {
   const router = useRouter();
   const setSession = usePlayerStore((s) => s.setSession);
   const [open, setOpen] = useState(false);
   const [roomCode, setRoomCode] = useState(initialRoomCode);
+  const nicknameRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (defaultOpen) {
+      setOpen(true);
+    }
+  }, [defaultOpen]);
   const [nickname, setNickname] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -92,7 +100,15 @@ export function JoinRoomDialog({ children, initialRoomCode = "" }: JoinRoomDialo
       <span onClick={() => setOpen(true)} style={{ display: "contents" }}>
         {children}
       </span>
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog
+        open={open}
+        onOpenChange={(v) => {
+          setOpen(v);
+          if (v && initialRoomCode) {
+            setTimeout(() => nicknameRef.current?.focus(), 50);
+          }
+        }}
+      >
       <DialogContent className="sm:max-w-sm">
         <DialogHeader>
           <DialogTitle>방 입장</DialogTitle>
@@ -111,6 +127,7 @@ export function JoinRoomDialog({ children, initialRoomCode = "" }: JoinRoomDialo
             autoFocus={!initialRoomCode}
           />
           <Input
+            ref={nicknameRef}
             placeholder="닉네임 (2~12자)"
             value={nickname}
             onChange={(e) => setNickname(e.target.value)}

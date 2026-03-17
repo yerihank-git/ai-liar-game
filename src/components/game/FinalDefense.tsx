@@ -3,6 +3,7 @@
 import { useState, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { useTimer } from "@/hooks/useTimer";
+import { getCategoryById } from "@/constants/categories";
 import type { Room, Player } from "@/types/game";
 
 interface FinalDefenseProps {
@@ -12,12 +13,19 @@ interface FinalDefenseProps {
   sessionToken: string;
 }
 
-export function FinalDefense({ room, players, currentPlayerId, sessionToken }: FinalDefenseProps) {
+export function FinalDefense({
+  room,
+  players,
+  currentPlayerId,
+  sessionToken,
+}: FinalDefenseProps) {
   const [guess, setGuess] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  const accusedPlayer = players.find((p) => p.id === room.current_turn_player_id);
+  const accusedPlayer = players.find(
+    (p) => p.id === room.current_turn_player_id,
+  );
   const isLiar = accusedPlayer?.id === currentPlayerId;
 
   const handleExpire = useCallback(async () => {
@@ -51,27 +59,47 @@ export function FinalDefense({ room, players, currentPlayerId, sessionToken }: F
     }
   };
 
-  const timerColor = remainingSec <= 10 ? "var(--liar-red)" : "var(--citizen-gold)";
+  const timerColor =
+    remainingSec <= 10 ? "var(--liar-red)" : "var(--citizen-gold)";
 
   return (
     <div className="max-w-xl mx-auto space-y-6 flex flex-col items-center text-center">
       <div>
-        <p className="text-xs tracking-[0.3em] uppercase opacity-40 mb-1" style={{ fontFamily: "var(--font-game-mono, monospace)" }}>
+        <p
+          className="text-xs tracking-[0.3em] uppercase opacity-40 mb-1"
+          style={{ fontFamily: "var(--font-game-mono, monospace)" }}
+        >
           최후의 변론
         </p>
-        <h2 className="text-2xl font-bold" style={{ fontFamily: "var(--font-bebas, sans-serif)", letterSpacing: "0.1em", color: "var(--liar-red)" }}>
+        <h2
+          className="text-2xl font-bold"
+          style={{
+            fontFamily: "var(--font-bebas, sans-serif)",
+            letterSpacing: "0.1em",
+            color: "var(--liar-red)",
+          }}
+        >
           {accusedPlayer?.nickname}이(가) 라이어로 지목되었습니다
         </h2>
       </div>
 
-      <div className="text-4xl font-bold tabular-nums" style={{ fontFamily: "var(--font-game-mono, monospace)", color: timerColor }}>
+      <div
+        className="text-4xl font-bold tabular-nums"
+        style={{
+          fontFamily: "var(--font-game-mono, monospace)",
+          color: timerColor,
+        }}
+      >
         {remainingSec}
       </div>
 
       {isLiar ? (
         <div className="w-full space-y-4">
           <p className="text-sm opacity-70">
-            키워드를 맞히면 역전 승리! 카테고리: <strong>{room.category}</strong>
+            키워드를 맞히면 역전 승리! 카테고리:{" "}
+            <strong>
+              {getCategoryById(room.category ?? "")?.name ?? room.category}
+            </strong>
           </p>
 
           {!submitted ? (
@@ -92,13 +120,25 @@ export function FinalDefense({ room, players, currentPlayerId, sessionToken }: F
                 }}
                 autoFocus
               />
-              <Button onClick={handleSubmit} disabled={!guess.trim() || isSubmitting} className="w-full">
+              <Button
+                onClick={handleSubmit}
+                disabled={!guess.trim() || isSubmitting}
+                className="w-full"
+              >
                 {isSubmitting ? "제출 중..." : "정답 제출"}
               </Button>
             </>
           ) : (
-            <div className="rounded-xl px-4 py-4" style={{ background: "rgba(6,214,160,0.08)", border: "1px solid rgba(6,214,160,0.2)" }}>
-              <p style={{ color: "var(--ai-teal)" }}>정답을 제출했습니다. 결과를 기다리는 중...</p>
+            <div
+              className="rounded-xl px-4 py-4"
+              style={{
+                background: "rgba(6,214,160,0.08)",
+                border: "1px solid rgba(6,214,160,0.2)",
+              }}
+            >
+              <p style={{ color: "var(--ai-teal)" }}>
+                정답을 제출했습니다. 결과를 기다리는 중...
+              </p>
             </div>
           )}
         </div>
@@ -109,10 +149,17 @@ export function FinalDefense({ room, players, currentPlayerId, sessionToken }: F
           </p>
           <div
             className="rounded-xl px-4 py-4"
-            style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}
+            style={{
+              background: "rgba(255,255,255,0.03)",
+              border: "1px solid rgba(255,255,255,0.06)",
+            }}
           >
-            <p className="text-sm opacity-40" style={{ fontFamily: "var(--font-game-mono, monospace)" }}>
-              카테고리: {room.category}
+            <p
+              className="text-sm opacity-40"
+              style={{ fontFamily: "var(--font-game-mono, monospace)" }}
+            >
+              카테고리:{" "}
+              {getCategoryById(room.category ?? "")?.name ?? room.category}
             </p>
           </div>
         </div>

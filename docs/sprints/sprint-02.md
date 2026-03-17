@@ -19,11 +19,11 @@
 
 **파일**: `src/hooks/useRoom.ts`, `src/hooks/usePlayers.ts`, `src/hooks/usePresence.ts`
 
-| 훅 | 구독 대상 | 동작 |
-| --- | --- | --- |
-| `useRoom` | rooms UPDATE | room 상태 업데이트 + descriptions/messages/votes 초기 로드 |
-| `usePlayers` | players 전체 이벤트 | 변경 감지 시 전체 재조회 |
-| `usePresence` | Supabase Presence | 플레이어 온/오프라인 상태 실시간 추적 |
+| 훅            | 구독 대상           | 동작                                                       |
+| ------------- | ------------------- | ---------------------------------------------------------- |
+| `useRoom`     | rooms UPDATE        | room 상태 업데이트 + descriptions/messages/votes 초기 로드 |
+| `usePlayers`  | players 전체 이벤트 | 변경 감지 시 전체 재조회                                   |
+| `usePresence` | Supabase Presence   | 플레이어 온/오프라인 상태 실시간 추적                      |
 
 ### 3. 대기실 컴포넌트
 
@@ -37,10 +37,12 @@
 ### 4. API Routes 추가
 
 **파일**: `src/app/api/rooms/[roomId]/settings/route.ts`
+
 - `PATCH /api/rooms/[roomId]/settings`: 게임 설정 업데이트 (방장 검증, 유효값 검증)
 
 **파일**: `src/app/api/rooms/[roomId]/ai-players/route.ts`
-- `POST /api/rooms/[roomId]/ai-players`: AI 플레이어 추가 (닉네임 ARIA→NOVA 순 자동 배정)
+
+- `POST /api/rooms/[roomId]/ai-players`: AI 플레이어 추가 (닉네임 BYEUB→MEDIAI 순 자동 배정)
 - `DELETE /api/rooms/[roomId]/ai-players`: AI 플레이어 제거 (최근 추가 순)
 
 ### 5. 게임 페이지 업데이트
@@ -87,21 +89,22 @@
 
 ## Sprint 2 완료 기준 검증
 
-| 완료 기준 | 결과 |
-| --- | --- |
-| `npm run build` 에러 없이 성공 | ✅ |
-| 대기실 UI 렌더링 (방장/참가자 분리) | ✅ |
-| 플레이어 목록 Realtime 구독 | ✅ |
-| 초대 링크 복사 기능 | ✅ |
-| 게임 설정 API (모드, 카테고리, 타이머) | ✅ |
-| AI 플레이어 추가/제거 API | ✅ |
-| Zustand 스토어 세션 영속화 | ✅ |
+| 완료 기준                              | 결과 |
+| -------------------------------------- | ---- |
+| `npm run build` 에러 없이 성공         | ✅   |
+| 대기실 UI 렌더링 (방장/참가자 분리)    | ✅   |
+| 플레이어 목록 Realtime 구독            | ✅   |
+| 초대 링크 복사 기능                    | ✅   |
+| 게임 설정 API (모드, 카테고리, 타이머) | ✅   |
+| AI 플레이어 추가/제거 API              | ✅   |
+| Zustand 스토어 세션 영속화             | ✅   |
 
 ---
 
 ## Sprint 3 준비 사항
 
 **Sprint 3 구현 예정**:
+
 - `POST /api/rooms/[roomId]/start`: 게임 시작 API (역할 배정, 키워드 선택, phase 전환)
 - `lib/game-logic.ts`: 역할 배정, 턴 순서 결정, 승패 판정 순수 함수
 - RoleReveal, DescriptionPhase, VotePhase, FinalDefense, Result 컴포넌트

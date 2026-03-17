@@ -9,9 +9,9 @@ function getClient(): Anthropic {
   return _client;
 }
 
-const MODEL = "claude-sonnet-4-6";
-const MAX_TOKENS = 300;
-const TIMEOUT_MS = 8000;
+const MODEL = "claude-haiku-4-5-20251001";
+const MAX_TOKENS = 600;
+const TIMEOUT_MS = 10000;
 
 export interface AiCallOptions {
   system: string;
@@ -23,7 +23,9 @@ export interface AiCallOptions {
  * Claude API 단일 텍스트 응답 호출.
  * 타임아웃(8초) + 실패 시 null 반환 (호출부에서 폴백 처리).
  */
-export async function callClaude(options: AiCallOptions): Promise<string | null> {
+export async function callClaude(
+  options: AiCallOptions,
+): Promise<string | null> {
   const { system, prompt, maxTokens = MAX_TOKENS } = options;
 
   const controller = new AbortController();
@@ -37,7 +39,7 @@ export async function callClaude(options: AiCallOptions): Promise<string | null>
         system,
         messages: [{ role: "user", content: prompt }],
       },
-      { signal: controller.signal }
+      { signal: controller.signal },
     );
 
     clearTimeout(timer);
@@ -47,7 +49,10 @@ export async function callClaude(options: AiCallOptions): Promise<string | null>
     return null;
   } catch (err) {
     clearTimeout(timer);
-    console.error("[callClaude] error:", err instanceof Error ? err.message : String(err));
+    console.error(
+      "[callClaude] error:",
+      err instanceof Error ? err.message : String(err),
+    );
     return null;
   }
 }

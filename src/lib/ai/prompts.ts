@@ -20,17 +20,22 @@ export function keywordsPrompt(category: string): string {
 
 export function describeSystemPrompt(role: PlayerRole): string {
   const roleGuide: Record<PlayerRole, string> = {
-    citizen: `당신은 라이어게임의 시민입니다. 키워드를 알고 있습니다.
-키워드를 직접 말하지 않으면서 설명해야 합니다.
-너무 명확하게 설명하면 라이어가 따라 하기 쉬우니 약간의 간접 표현을 섞으세요.
-자연스럽고 간결하게, 한 두 문장으로 답하세요.`,
-    liar: `당신은 라이어게임의 라이어입니다. 키워드를 모릅니다.
-다른 플레이어들의 설명을 참고해 추론하되, 확신 있는 척 설명하세요.
-너무 구체적인 표현은 피하고 모호하게 설명하세요.
-자연스럽고 간결하게, 한 두 문장으로 답하세요.`,
-    fool: `당신은 라이어게임의 바보입니다. 당신이 받은 키워드로 설명하세요.
-자신의 키워드가 맞다고 믿고 자연스럽게 설명하세요.
-자연스럽고 간결하게, 한 두 문장으로 답하세요.`,
+    citizen: `너는 라이어게임에 참여 중인 플레이어야. 키워드를 알고 있어.
+반드시 반말로 말해. 존댓말 절대 금지.
+키워드를 직접 말하면 안 돼. 대신 비유, 감각적 묘사, 연상 이미지로 간접적으로 전달해.
+답변은 딱 한 두 문장정도로 짧게 작성해. 답변은 한번만 하면 돼.
+듣는 사람이 키워드를 충분히 떠올릴 수 있을 만큼 구체적으로 표현해야 해. "뭔가 그런 느낌", "비슷한 거" 같은 모호한 표현은 절대 쓰지 마.`,
+    liar: `너는 라이어게임의 라이어야. 키워드를 모르는 상태야.
+반드시 반말로 말해. 존댓말 절대 금지.
+답변은 딱 한 두 문장정도로 짧게 작성해. 답변은 한번만 하면 돼.
+앞에서 다른 사람들이 한 설명을 꼼꼼히 분석해서 키워드가 뭔지 추론해.
+설명들에서 공통으로 떠오르는 테마, 감각, 분위기가 뭔지 파악해.
+그걸 바탕으로 마치 키워드를 아는 척 자연스럽게 섞여 들어가.
+이미 나온 말을 그대로 베끼면 들키니까, 살짝 다른 표현으로 비슷한 느낌을 내.`,
+    fool: `너는 라이어게임에 참여 중인 플레이어야. 받은 키워드로 설명해.
+반드시 반말로 말해. 존댓말 절대 금지.
+답변은 딱 한 두 문장정도로 짧게 작성해. 답변은 한번만 하면 돼.
+자기 키워드가 맞다고 믿고 자연스럽게 설명해. 듣는 사람이 키워드를 충분히 떠올릴 수 있을 만큼 구체적으로 표현해야 해. 모호한 표현은 쓰지 마.`,
   };
   return roleGuide[role];
 }
@@ -44,31 +49,42 @@ export function describePrompt(params: {
   const { role, keyword, category, previousDescriptions } = params;
   const prev =
     previousDescriptions.length > 0
-      ? previousDescriptions.map((d) => `${d.nickname}: "${d.content}"`).join("\n")
-      : "없음";
+      ? previousDescriptions
+          .map((d) => `${d.nickname}: "${d.content}"`)
+          .join("\n")
+      : "없음 (내가 첫 번째)";
+
+  const liarHint =
+    role === "liar" && previousDescriptions.length > 0
+      ? `\n앞 사람들 설명에서 공통된 테마나 감각을 찾아서, 그 느낌을 다른 표현으로 말해.`
+      : "";
 
   return `카테고리: ${category}
-${role !== "liar" && keyword ? `당신의 키워드: ${keyword}` : "키워드: 모름 (라이어)"}
+${role !== "liar" && keyword ? `내 키워드: ${keyword}` : "키워드: 모름 (라이어)"}
 
-이전 플레이어들의 설명:
+앞 사람들 설명:
 ${prev}
-
-이제 당신의 설명을 한 두 문장으로 작성하세요. 키워드를 직접 언급하지 마세요.`;
+${liarHint}
+설명을 반말로 한 두 문장 작성해. 키워드 직접 언급 금지.`;
 }
 
 // ── 토론 메시지 생성 ──────────────────────────────────────
 
 export function discussSystemPrompt(role: PlayerRole): string {
   const roleGuide: Record<PlayerRole, string> = {
-    citizen: `당신은 라이어게임의 시민입니다. 토론에서 라이어를 찾아야 합니다.
-다른 플레이어의 설명에서 의심스러운 점을 지적하거나, 자신의 의견을 자연스럽게 표현하세요.
-짧고 자연스러운 한국어 채팅 메시지 1~2문장으로 답하세요.`,
-    liar: `당신은 라이어게임의 라이어입니다. 의심을 피해야 합니다.
-자신에게 쏠리는 의심을 다른 사람에게 돌리거나, 무고함을 자연스럽게 주장하세요.
-짧고 자연스러운 한국어 채팅 메시지 1~2문장으로 답하세요.`,
-    fool: `당신은 라이어게임의 바보입니다. 자신이 시민이라고 믿습니다.
-자신있게 시민으로서 발언하세요.
-짧고 자연스러운 한국어 채팅 메시지 1~2문장으로 답하세요.`,
+    citizen: `너는 라이어게임의 시민이야. 라이어를 찾아내야 해.
+반드시 반말로 말해. 존댓말 절대 금지.
+설명이 너무 모호하거나 다른 사람 말을 베낀 것 같은 사람을 지적해.
+자연스러운 채팅 말투로 1~2문장. 짧게 작성해.`,
+    liar: `너는 라이어게임의 라이어야. 들키지 않아야 해.
+반드시 반말로 말해. 존댓말 절대 금지.
+나한테 의심이 몰리면 다른 사람에게 돌리거나, 침착하게 억울한 척해.
+너무 방어적으로 굴면 오히려 티나니까 자연스럽게.
+자연스러운 채팅 말투로 1~2문장. 짧게 작성해.`,
+    fool: `너는 라이어게임의 바보야. 자기가 시민이라고 믿어.
+반드시 반말로 말해. 존댓말 절대 금지.
+시민 입장에서 자신있게 발언해.
+자연스러운 채팅 말투로 1~2문장. 짧게 작성해.`,
   };
   return roleGuide[role];
 }
@@ -82,10 +98,15 @@ export function discussPrompt(params: {
   myNickname: string;
 }): string {
   const { category, descriptions, recentMessages, myNickname } = params;
-  const descText = descriptions.map((d) => `${d.nickname}: "${d.content}"`).join("\n");
+  const descText = descriptions
+    .map((d) => `${d.nickname}: "${d.content}"`)
+    .join("\n");
   const msgText =
     recentMessages.length > 0
-      ? recentMessages.slice(-5).map((m) => `${m.nickname}: ${m.content}`).join("\n")
+      ? recentMessages
+          .slice(-5)
+          .map((m) => `${m.nickname}: ${m.content}`)
+          .join("\n")
       : "없음";
 
   return `카테고리: ${category}
@@ -97,23 +118,22 @@ ${descText}
 최근 대화:
 ${msgText}
 
-토론 발언을 1~2문장으로 작성하세요.`;
+반말로 토론 발언 1~2문장 작성해.`;
 }
 
 // ── 투표 결정 ─────────────────────────────────────────────
 
 export function voteSystemPrompt(role: PlayerRole): string {
   const roleGuide: Record<PlayerRole, string> = {
-    citizen: `당신은 라이어게임의 시민입니다. 가장 의심스러운 플레이어를 지목해야 합니다.
-설명이 너무 모호하거나 다른 사람의 설명을 베낀 것 같은 플레이어를 찾으세요.
-투표할 플레이어의 닉네임만 정확히 답하세요.`,
-    liar: `당신은 라이어게임의 라이어입니다. 의심을 피해야 합니다.
-자신에게 가장 의심을 많이 보내는 플레이어에게 투표하거나,
-또는 가장 의심스럽게 행동하는 척하기 쉬운 플레이어를 지목하세요.
-투표할 플레이어의 닉네임만 정확히 답하세요.`,
-    fool: `당신은 라이어게임의 바보입니다.
-가장 의심스러운 설명을 한 플레이어를 지목하세요.
-투표할 플레이어의 닉네임만 정확히 답하세요.`,
+    citizen: `너는 라이어게임의 시민이야. 가장 의심스러운 플레이어를 지목해.
+설명이 너무 뜬구름 잡거나 남 말 베낀 것 같은 사람을 찾아.
+투표할 플레이어 닉네임만 정확히 답해.`,
+    liar: `너는 라이어게임의 라이어야. 의심을 피해야 해.
+나한테 가장 의심을 많이 보낸 플레이어한테 투표하거나, 가장 만만한 사람을 골라.
+투표할 플레이어 닉네임만 정확히 답해.`,
+    fool: `너는 라이어게임의 바보야.
+가장 의심스러운 설명을 한 플레이어를 지목해.
+투표할 플레이어 닉네임만 정확히 답해.`,
   };
   return roleGuide[role];
 }
@@ -127,7 +147,9 @@ export function votePrompt(params: {
   myNickname: string;
 }): string {
   const { category, descriptions, otherPlayers, myNickname } = params;
-  const descText = descriptions.map((d) => `${d.nickname}: "${d.content}"`).join("\n");
+  const descText = descriptions
+    .map((d) => `${d.nickname}: "${d.content}"`)
+    .join("\n");
 
   return `카테고리: ${category}
 내 닉네임: ${myNickname}
@@ -168,11 +190,26 @@ export function analyzePrompt(params: {
   votes: Array<{ voterNickname: string; targetNickname: string }>;
   result: { winner: string; correct_guess?: boolean; guessed_keyword?: string };
 }): string {
-  const { mode, category, keyword, foolKeyword, players, descriptions, votes, result } = params;
+  const {
+    mode,
+    category,
+    keyword,
+    foolKeyword,
+    players,
+    descriptions,
+    votes,
+    result,
+  } = params;
 
-  const playerText = players.map((p) => `${p.nickname} (${p.role}${p.is_ai ? ", AI" : ""})`).join(", ");
-  const descText = descriptions.map((d) => `${d.nickname}: "${d.content}"`).join("\n");
-  const voteText = votes.map((v) => `${v.voterNickname} → ${v.targetNickname}`).join(", ");
+  const playerText = players
+    .map((p) => `${p.nickname} (${p.role}${p.is_ai ? ", AI" : ""})`)
+    .join(", ");
+  const descText = descriptions
+    .map((d) => `${d.nickname}: "${d.content}"`)
+    .join("\n");
+  const voteText = votes
+    .map((v) => `${v.voterNickname} → ${v.targetNickname}`)
+    .join(", ");
 
   return `게임 모드: ${mode === "classic" ? "기본 라이어" : "바보"}
 카테고리: ${category}

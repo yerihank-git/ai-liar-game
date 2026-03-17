@@ -79,8 +79,8 @@ export async function POST(
   const turnOrder = determineTurnOrder(players as Player[]);
 
   // 키워드 선택
-  const category = room.category ?? CATEGORIES[0].name;
-  const categoryData = CATEGORIES.find((c) => c.name === category) ?? CATEGORIES[0];
+  const category = room.category ?? CATEGORIES[0].id;
+  const categoryData = CATEGORIES.find((c) => c.id === category) ?? CATEGORIES[0];
 
   let keyword: string;
   let foolKeyword: string | null = null;

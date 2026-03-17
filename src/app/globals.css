@@ -267,7 +267,7 @@ main {
 
 /* ─── GAME UTILITY CLASSES ───────────────────────────── */
 .glitch-liar {
-  animation: liar-glitch 3s ease-in-out infinite;
+  animation: liar-glitch 1.5s ease-in-out infinite;
   color: var(--liar-red);
 }
 

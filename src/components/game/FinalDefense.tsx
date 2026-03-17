@@ -29,14 +29,17 @@ export function FinalDefense({
   const isLiar = accusedPlayer?.id === currentPlayerId;
 
   const handleExpire = useCallback(async () => {
-    if (!isLiar || submitted) return;
-    // 시간 초과 — 서버에서 라이어 정답 실패 처리
+    // 라이어가 이미 정답을 제출했으면 중단 (guess API가 이미 phase 전환 처리)
+    if (submitted) return;
+    // 라이어든 시민이든 타이머 만료 시 next-phase 호출.
+    // AI가 라이어일 때 인간 플레이어가 이를 처리하기 위해 isLiar 조건 제거.
+    // API는 낙관적 잠금(.eq("phase", "final_defense"))으로 중복 호출을 방어함.
     await fetch(`/api/rooms/${room.id}/next-phase`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ sessionToken }),
     });
-  }, [isLiar, submitted, room.id, sessionToken]);
+  }, [submitted, room.id, sessionToken]);
 
   const { remainingSec } = useTimer({
     startedAt: room.phase_started_at,

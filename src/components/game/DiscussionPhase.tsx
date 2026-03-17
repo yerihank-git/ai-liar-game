@@ -70,27 +70,53 @@ export function DiscussionPhase({
     return `${m}:${String(s).padStart(2, "0")}`;
   };
 
-  const timerColor = remainingSec <= 30 ? "var(--liar-red)" : remainingSec <= 60 ? "var(--citizen-gold)" : "var(--ai-teal)";
+  const timerColor =
+    remainingSec <= 30
+      ? "var(--liar-red)"
+      : remainingSec <= 60
+        ? "var(--citizen-gold)"
+        : "var(--ai-teal)";
 
   return (
-    <div className="flex flex-col gap-4" style={{ height: "calc(100dvh - 160px)", minHeight: "400px" }}>
+    <div
+      className="flex flex-col gap-4"
+      style={{ height: "calc(100dvh - 160px)", minHeight: "400px" }}
+    >
       {/* 헤더 */}
       <div className="shrink-0 space-y-2">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-xs tracking-[0.3em] uppercase opacity-40" style={{ fontFamily: "var(--font-game-mono, monospace)" }}>
+            <p
+              className="text-xs tracking-[0.3em] uppercase opacity-40"
+              style={{ fontFamily: "var(--font-game-mono, monospace)" }}
+            >
               토론 단계
             </p>
-            <h2 className="text-xl font-bold" style={{ fontFamily: "var(--font-bebas, sans-serif)", letterSpacing: "0.1em" }}>
-              누가 라이어일까요?
+            <h2
+              className="text-xl font-bold"
+              style={{
+                fontFamily: "var(--font-bebas, sans-serif)",
+                letterSpacing: "0.1em",
+              }}
+            >
+              라이어를 맞추기 위해 자유롭게 묻고 답변하세요.
             </h2>
           </div>
-          <span className="text-2xl font-bold tabular-nums" style={{ fontFamily: "var(--font-game-mono, monospace)", color: timerColor }}>
+          <span
+            className="text-2xl font-bold tabular-nums"
+            style={{
+              fontFamily: "var(--font-game-mono, monospace)",
+              color: timerColor,
+            }}
+          >
             {formatTime(remainingSec)}
           </span>
         </div>
         {/* 전체 너비 프로그레스 바 */}
-        <div className="w-full h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.08)" }}>
+        <div
+          className="w-full h-1.5 rounded-full overflow-hidden"
+          style={{ background: "rgba(255,255,255,0.08)" }}
+        >
           <div
             className="h-full rounded-full transition-all duration-500"
             style={{ width: `${progress * 100}%`, background: timerColor }}
@@ -105,7 +131,8 @@ export function DiscussionPhase({
           style={{ fontFamily: "var(--font-game-mono, monospace)" }}
           onClick={() => setShowDescriptions((v) => !v)}
         >
-          {showDescriptions ? "▲" : "▼"} 설명 목록 {showDescriptions ? "접기" : "펼치기"}
+          {showDescriptions ? "▲" : "▼"} 설명 목록{" "}
+          {showDescriptions ? "접기" : "펼치기"}
         </button>
         {showDescriptions && (
           <div className="mt-2 space-y-1">
@@ -113,8 +140,14 @@ export function DiscussionPhase({
               const player = players.find((p) => p.id === d.player_id);
               return (
                 <div key={d.id} className="text-sm flex gap-2">
-                  <span className="opacity-50 shrink-0">{player?.nickname}:</span>
-                  <span className="opacity-80">{d.content || <span className="opacity-30 italic">（무응답）</span>}</span>
+                  <span className="opacity-50 shrink-0">
+                    {player?.nickname}:
+                  </span>
+                  <span className="opacity-80">
+                    {d.content || (
+                      <span className="opacity-30 italic">（무응답）</span>
+                    )}
+                  </span>
                 </div>
               );
             })}
@@ -125,10 +158,16 @@ export function DiscussionPhase({
       {/* 채팅 영역 */}
       <div
         className="flex-1 rounded-xl overflow-y-auto p-3 space-y-2"
-        style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}
+        style={{
+          background: "rgba(255,255,255,0.03)",
+          border: "1px solid rgba(255,255,255,0.06)",
+        }}
       >
         {messages.length === 0 && (
-          <p className="text-center text-xs opacity-30 py-8" style={{ fontFamily: "var(--font-game-mono, monospace)" }}>
+          <p
+            className="text-center text-xs opacity-30 py-8"
+            style={{ fontFamily: "var(--font-game-mono, monospace)" }}
+          >
             토론을 시작해보세요
           </p>
         )}
@@ -136,19 +175,36 @@ export function DiscussionPhase({
           const player = players.find((p) => p.id === msg.player_id);
           const isMe = msg.player_id === currentPlayerId;
           return (
-            <div key={msg.id} className={`flex gap-2 ${isMe ? "flex-row-reverse" : ""}`}>
-              <div className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs"
-                style={{ background: isMe ? "rgba(230,57,70,0.3)" : "rgba(255,255,255,0.08)" }}>
+            <div
+              key={msg.id}
+              className={`flex gap-2 ${isMe ? "flex-row-reverse" : ""}`}
+            >
+              <div
+                className="shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs"
+                style={{
+                  background: isMe
+                    ? "rgba(230,57,70,0.3)"
+                    : "rgba(255,255,255,0.08)",
+                }}
+              >
                 {player?.nickname?.[0] ?? "?"}
               </div>
-              <div className={`max-w-[70%] ${isMe ? "items-end" : "items-start"} flex flex-col gap-0.5`}>
-                <span className="text-xs opacity-40" style={{ fontFamily: "var(--font-game-mono, monospace)" }}>
-                  {player?.nickname ?? "?"}{player?.is_ai ? " [AI]" : ""}
+              <div
+                className={`max-w-[70%] ${isMe ? "items-end" : "items-start"} flex flex-col gap-0.5`}
+              >
+                <span
+                  className="text-xs opacity-40"
+                  style={{ fontFamily: "var(--font-game-mono, monospace)" }}
+                >
+                  {player?.nickname ?? "?"}
+                  {player?.is_ai ? " [AI]" : ""}
                 </span>
                 <div
                   className="rounded-xl px-3 py-2 text-sm"
                   style={{
-                    background: isMe ? "rgba(230,57,70,0.15)" : "rgba(255,255,255,0.06)",
+                    background: isMe
+                      ? "rgba(230,57,70,0.15)"
+                      : "rgba(255,255,255,0.06)",
                     border: `1px solid ${isMe ? "rgba(230,57,70,0.2)" : "rgba(255,255,255,0.08)"}`,
                   }}
                 >
@@ -179,7 +235,11 @@ export function DiscussionPhase({
           }}
           maxLength={200}
         />
-        <Button onClick={handleSend} disabled={isSending || !input.trim()} size="sm">
+        <Button
+          onClick={handleSend}
+          disabled={isSending || !input.trim()}
+          size="sm"
+        >
           전송
         </Button>
       </div>

@@ -1,6 +1,10 @@
 "use client";
 
 import type { Room, Player } from "@/types/game";
+import { CATEGORIES } from "@/constants/categories";
+
+const getCategoryName = (id: string | null | undefined) =>
+  CATEGORIES.find((c) => c.id === id)?.name ?? id ?? "?";
 
 interface RoleRevealTableProps {
   room: Room;
@@ -14,7 +18,11 @@ const ROLE_LABELS: Record<string, { label: string; color: string }> = {
   fool: { label: "바보", color: "var(--ai-teal)" },
 };
 
-export function RoleRevealTable({ room, players, currentPlayerId }: RoleRevealTableProps) {
+export function RoleRevealTable({
+  room,
+  players,
+  currentPlayerId,
+}: RoleRevealTableProps) {
   return (
     <div className="space-y-3">
       <h3
@@ -27,20 +35,45 @@ export function RoleRevealTable({ room, players, currentPlayerId }: RoleRevealTa
       {/* 키워드 정보 */}
       <div
         className="rounded-xl px-4 py-3 flex flex-wrap gap-4 text-sm"
-        style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}
+        style={{
+          background: "rgba(255,255,255,0.04)",
+          border: "1px solid rgba(255,255,255,0.08)",
+        }}
       >
         <div>
-          <span className="opacity-40 mr-2" style={{ fontFamily: "var(--font-game-mono, monospace)" }}>카테고리</span>
-          <span className="font-medium">{room.category ?? "?"}</span>
+          <span
+            className="opacity-40 mr-2"
+            style={{ fontFamily: "var(--font-game-mono, monospace)" }}
+          >
+            카테고리
+          </span>
+          <span className="font-medium">{getCategoryName(room.category)}</span>
         </div>
         <div>
-          <span className="opacity-40 mr-2" style={{ fontFamily: "var(--font-game-mono, monospace)" }}>키워드</span>
-          <span className="font-semibold" style={{ color: "var(--citizen-gold)" }}>{room.keyword ?? "?"}</span>
+          <span
+            className="opacity-40 mr-2"
+            style={{ fontFamily: "var(--font-game-mono, monospace)" }}
+          >
+            키워드
+          </span>
+          <span
+            className="font-semibold"
+            style={{ color: "var(--citizen-gold)" }}
+          >
+            {room.keyword ?? "?"}
+          </span>
         </div>
         {room.mode === "fool" && room.fool_keyword && (
           <div>
-            <span className="opacity-40 mr-2" style={{ fontFamily: "var(--font-game-mono, monospace)" }}>바보 키워드</span>
-            <span className="font-semibold" style={{ color: "var(--ai-teal)" }}>{room.fool_keyword}</span>
+            <span
+              className="opacity-40 mr-2"
+              style={{ fontFamily: "var(--font-game-mono, monospace)" }}
+            >
+              바보 키워드
+            </span>
+            <span className="font-semibold" style={{ color: "var(--ai-teal)" }}>
+              {room.fool_keyword}
+            </span>
           </div>
         )}
       </div>
@@ -56,7 +89,9 @@ export function RoleRevealTable({ room, players, currentPlayerId }: RoleRevealTa
               key={player.id}
               className="rounded-lg px-4 py-2.5 flex items-center gap-3"
               style={{
-                background: isMe ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.03)",
+                background: isMe
+                  ? "rgba(255,255,255,0.06)"
+                  : "rgba(255,255,255,0.03)",
                 border: `1px solid ${isMe ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.05)"}`,
               }}
             >
@@ -68,9 +103,23 @@ export function RoleRevealTable({ room, players, currentPlayerId }: RoleRevealTa
               </div>
               <span className="flex-1 text-sm font-medium">
                 {player.nickname}
-                {isMe && <span className="ml-1.5 text-xs opacity-40" style={{ fontFamily: "var(--font-game-mono, monospace)" }}>(나)</span>}
+                {isMe && (
+                  <span
+                    className="ml-1.5 text-xs opacity-40"
+                    style={{ fontFamily: "var(--font-game-mono, monospace)" }}
+                  >
+                    (나)
+                  </span>
+                )}
                 {player.is_ai && (
-                  <span className="ml-1.5 text-xs px-1.5 py-0.5 rounded" style={{ background: "rgba(6,214,160,0.15)", color: "var(--ai-teal)", fontFamily: "var(--font-game-mono, monospace)" }}>
+                  <span
+                    className="ml-1.5 text-xs px-1.5 py-0.5 rounded"
+                    style={{
+                      background: "rgba(6,214,160,0.15)",
+                      color: "var(--ai-teal)",
+                      fontFamily: "var(--font-game-mono, monospace)",
+                    }}
+                  >
                     AI
                   </span>
                 )}
@@ -78,7 +127,11 @@ export function RoleRevealTable({ room, players, currentPlayerId }: RoleRevealTa
               {roleInfo && (
                 <span
                   className="text-sm font-semibold"
-                  style={{ color: roleInfo.color, fontFamily: "var(--font-bebas, sans-serif)", letterSpacing: "0.05em" }}
+                  style={{
+                    color: roleInfo.color,
+                    fontFamily: "var(--font-bebas, sans-serif)",
+                    letterSpacing: "0.05em",
+                  }}
                 >
                   {roleInfo.label}
                 </span>

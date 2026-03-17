@@ -16,6 +16,7 @@ interface GameSettingsProps {
   onAiCountChange: (count: number) => void;
   onTimerChange: (field: string, value: number) => void;
   isUpdating: boolean;
+  isAiPending?: boolean;
 }
 
 export function GameSettings({
@@ -26,6 +27,7 @@ export function GameSettings({
   onAiCountChange,
   onTimerChange,
   isUpdating,
+  isAiPending = false,
 }: GameSettingsProps) {
   const [showTimerSettings, setShowTimerSettings] = useState(false);
 
@@ -83,10 +85,11 @@ export function GameSettings({
             size="sm"
             variant="outline"
             onClick={() => onAiCountChange(Math.max(0, aiPlayerCount - 1))}
-            disabled={isUpdating || aiPlayerCount === 0}
-            className="h-8 w-8 p-0"
+            disabled={isUpdating || isAiPending || aiPlayerCount === 0}
+            className="h-8 px-2 gap-1"
           >
             <BotOff className="h-4 w-4" />
+            <span className="text-xs">제외</span>
           </Button>
           <div className="flex gap-1">
             {Array.from({ length: GAME_CONFIG.MAX_AI_PLAYERS }).map((_, i) => (
@@ -104,10 +107,11 @@ export function GameSettings({
             size="sm"
             variant="outline"
             onClick={() => onAiCountChange(Math.min(GAME_CONFIG.MAX_AI_PLAYERS, aiPlayerCount + 1))}
-            disabled={isUpdating || aiPlayerCount >= GAME_CONFIG.MAX_AI_PLAYERS}
-            className="h-8 w-8 p-0"
+            disabled={isUpdating || isAiPending || aiPlayerCount >= GAME_CONFIG.MAX_AI_PLAYERS}
+            className="h-8 px-2 gap-1"
           >
             <Bot className="h-4 w-4" />
+            <span className="text-xs">추가</span>
           </Button>
         </div>
       </div>

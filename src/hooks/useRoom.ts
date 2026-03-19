@@ -38,11 +38,20 @@ export function useRoom(roomId: string) {
       .on(
         "postgres_changes",
         { event: "UPDATE", schema: "public", table: "rooms", filter: `id=eq.${roomId}` },
-        (payload) => setRoom(payload.new as Room)
+        (payload) => {
+          const newRoom = payload.new as Room;
+          setRoom(newRoom);
+          // 다시하기(result → waiting) 시 게임 데이터 즉시 초기화
+          if (newRoom.phase === "waiting") {
+            setDescriptions([]);
+            setMessages([]);
+            setVotes([]);
+          }
+        }
       )
       .on(
         "postgres_changes",
-        { event: "INSERT", schema: "public", table: "descriptions", filter: `room_id=eq.${roomId}` },
+        { event: "*", schema: "public", table: "descriptions", filter: `room_id=eq.${roomId}` },
         async () => {
           const { data } = await supabase.from("descriptions").select("*").eq("room_id", roomId).order("turn_number");
           if (data) setDescriptions(data);
@@ -50,7 +59,7 @@ export function useRoom(roomId: string) {
       )
       .on(
         "postgres_changes",
-        { event: "INSERT", schema: "public", table: "messages", filter: `room_id=eq.${roomId}` },
+        { event: "*", schema: "public", table: "messages", filter: `room_id=eq.${roomId}` },
         async () => {
           const { data } = await supabase.from("messages").select("*").eq("room_id", roomId).order("created_at");
           if (data) setMessages(data);

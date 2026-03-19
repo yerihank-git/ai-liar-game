@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase/server";
 import { generateRoomCode } from "@/lib/utils";
 import { GAME_CONFIG } from "@/constants/game-config";
+import { CATEGORIES } from "@/constants/categories";
 
 // POST /api/rooms — 방 생성
 export async function POST(req: NextRequest) {
@@ -36,6 +37,7 @@ export async function POST(req: NextRequest) {
     .from("rooms")
     .insert({
       room_code: roomCode,
+      category: CATEGORIES[Math.floor(Math.random() * CATEGORIES.length)].id,
       description_timer_sec: GAME_CONFIG.DEFAULT_DESCRIPTION_TIMER,
       discussion_timer_sec: GAME_CONFIG.DEFAULT_DISCUSSION_TIMER,
       vote_timer_sec: GAME_CONFIG.DEFAULT_VOTE_TIMER,

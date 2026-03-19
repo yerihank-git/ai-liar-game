@@ -92,14 +92,14 @@ export async function POST(
       const votedIds = new Set((existingVotes ?? []).map((v) => v.voter_id));
       const unvoted = (allPlayers ?? []).filter((p) => !votedIds.has(p.id));
 
-      // 미투표자 랜덤 투표 처리
+      // 미투표자 랜덤 투표 처리 (ignoreDuplicates: 기존 투표 덮어쓰기 방지)
       for (const p of unvoted) {
         const others = (allPlayers ?? []).filter((op) => op.id !== p.id);
         if (others.length > 0) {
           const target = others[Math.floor(Math.random() * others.length)];
           await supabase.from("votes").upsert(
             { room_id: roomId, voter_id: p.id, target_id: target.id },
-            { onConflict: "room_id,voter_id" }
+            { onConflict: "room_id,voter_id", ignoreDuplicates: true }
           );
         }
       }
@@ -112,9 +112,18 @@ export async function POST(
       const { topPlayerId, isTie } = countVotes(finalVotes as Vote[]);
 
       if (isTie) {
-        // 동점 재투표
-        await supabase.from("votes").delete().eq("room_id", roomId);
-        await supabase.from("rooms").update({ phase_started_at: now }).eq("id", roomId);
+        // 동점 재투표 (낙관적 잠금: 같은 라운드에서 1회만 실행)
+        const { data: updated } = await supabase
+          .from("rooms")
+          .update({ phase_started_at: now })
+          .eq("id", roomId)
+          .eq("phase", "vote")
+          .eq("phase_started_at", room.phase_started_at)
+          .select("id");
+
+        if (updated && updated.length > 0) {
+          await supabase.from("votes").delete().eq("room_id", roomId);
+        }
         return NextResponse.json({ ok: true, tie: true });
       }
 

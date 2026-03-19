@@ -82,12 +82,18 @@ export async function POST(
     const { topPlayerId, isTie } = countVotes(allVotes as Vote[]);
 
     if (isTie) {
-      // 동점 → 재투표 (votes 초기화 후 vote phase 유지)
-      await supabase.from("votes").delete().eq("room_id", roomId);
-      await supabase
+      // 동점 → 재투표 (낙관적 잠금: 같은 라운드에서 1회만 실행)
+      const { data: updated } = await supabase
         .from("rooms")
         .update({ phase_started_at: new Date().toISOString() })
-        .eq("id", roomId);
+        .eq("id", roomId)
+        .eq("phase", "vote")
+        .eq("phase_started_at", room.phase_started_at)
+        .select("id");
+
+      if (updated && updated.length > 0) {
+        await supabase.from("votes").delete().eq("room_id", roomId);
+      }
       return NextResponse.json({ ok: true, tie: true });
     }
 
@@ -143,7 +149,8 @@ export async function POST(
         result,
         phase_started_at: new Date().toISOString(),
       })
-      .eq("id", roomId);
+      .eq("id", roomId)
+      .eq("phase", "vote");
   }
 
   return NextResponse.json({ ok: true });

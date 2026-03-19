@@ -17,6 +17,7 @@ export function VotePhase({ room, players, votes, currentPlayerId, sessionToken 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [voted, setVoted] = useState(false);
   const [voteError, setVoteError] = useState("");
+  const [tieMessage, setTieMessage] = useState("");
 
   const myVote = votes.find((v) => v.voter_id === currentPlayerId);
   const hasVoted = voted || !!myVote;
@@ -28,6 +29,9 @@ export function VotePhase({ room, players, votes, currentPlayerId, sessionToken 
     if (!myVote && voted) {
       setVoted(false);
       setSelectedId(null);
+      setTieMessage("동점으로 재투표합니다!");
+      const id = setTimeout(() => setTieMessage(""), 3000);
+      return () => clearTimeout(id);
     }
   }, [myVote, voted]);
 
@@ -112,6 +116,21 @@ export function VotePhase({ room, players, votes, currentPlayerId, sessionToken 
           {voteCount}/{totalCount}명 투표 완료
         </span>
       </div>
+
+      {/* 동점 재투표 알림 */}
+      {tieMessage && (
+        <div
+          className="text-center py-2 px-4 rounded-lg text-sm font-medium animate-pulse"
+          style={{
+            background: "rgba(230,182,57,0.12)",
+            color: "var(--citizen-gold)",
+            border: "1px solid rgba(230,182,57,0.3)",
+            fontFamily: "var(--font-game-mono, monospace)",
+          }}
+        >
+          {tieMessage}
+        </div>
+      )}
 
       {/* 플레이어 목록 */}
       <div className="space-y-2">

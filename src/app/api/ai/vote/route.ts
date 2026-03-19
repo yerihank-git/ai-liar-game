@@ -3,8 +3,7 @@ import { z } from "zod";
 import { createServerClient } from "@/lib/supabase/server";
 import { callClaude, randomDelay } from "@/lib/ai/claude";
 import { voteSystemPrompt, votePrompt } from "@/lib/ai/prompts";
-import { countVotes } from "@/lib/game-logic";
-import type { PlayerRole, Vote } from "@/types/game";
+import type { PlayerRole } from "@/types/game";
 
 const bodySchema = z.object({
   roomId: z.string().uuid(),
@@ -97,34 +96,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "투표 대상 없음" }, { status: 400 });
   }
 
-  // 투표 저장
+  // 투표 저장 (완료 여부 체크 및 phase 전환은 vote/route.ts 또는 next-phase에서 처리)
   await supabase.from("votes").upsert(
     { room_id: roomId, voter_id: aiPlayerId, target_id: targetId },
     { onConflict: "room_id,voter_id" }
   );
-
-  // 전원 투표 완료 여부 확인 → 집계
-  const { data: allPlayers } = await supabase.from("players").select("id").eq("room_id", roomId);
-  const { data: allVotes } = await supabase.from("votes").select("*").eq("room_id", roomId);
-
-  if ((allVotes?.length ?? 0) >= (allPlayers?.length ?? 0)) {
-    const { topPlayerId, isTie } = countVotes(allVotes as Vote[]);
-
-    if (!isTie && topPlayerId) {
-      const { data: accused } = await supabase.from("players").select("role").eq("id", topPlayerId).single();
-      let nextPhase = "result";
-      if (room.mode === "classic" && accused?.role === "liar") nextPhase = "final_defense";
-
-      await supabase.from("rooms").update({
-        phase: nextPhase,
-        current_turn_player_id: topPlayerId,
-        phase_started_at: new Date().toISOString(),
-      }).eq("id", roomId);
-    } else if (isTie) {
-      await supabase.from("votes").delete().eq("room_id", roomId);
-      await supabase.from("rooms").update({ phase_started_at: new Date().toISOString() }).eq("id", roomId);
-    }
-  }
 
   return NextResponse.json({ ok: true, targetId });
 }
